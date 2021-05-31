@@ -7,44 +7,38 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col">
-                        <div class="container">
-                            <div class="large-12 medium-12 small-12 cell">
-                                <div class="form-group">
-                                    <label for="file"> Tambahkan File Berupa Tipe Ms. Excel. Contoh: .xls, .xlsx, csv, spreadsheet, dll</label>
-                                    <input type="file" id="file" name="file" class="form-control form-control-border" :class="{'is-invalid': errors[0]}" ref="file" v-on:change="handleFileUpload()" @change="checkFile($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" pattern="^.+\.(xlsx|xls|csv)$" required/>
-                                    <div class="invalid-feedback text-center" v-if="errors.length > 0">
-                                        {{ errors[0].message}}
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="justify-content-center">
-                                    <span class="badge badge-info position-relative" :style="`left: ${uploadPercentage ? uploadPercentage - 4 : 0}% `"> {{ uploadPercentage }}%</span>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped" :class="{'progress-bar-animated': uploadPercentage < 100}" role="progressbar" max="100" :value.prop="uploadPercentage" aria-valuemin="0" aria-valuemax="100" :style="`width: ${uploadPercentage}%`"></div>
-                                </div>
-                                <br>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="file"> Tambahkan File Berupa Tipe Ms. Excel. Contoh: .xls, .xlsx, csv, spreadsheet, dll</label>
+                            <input type="file" id="file" name="file" class="form-control form-control-border" :class="{'is-invalid': errors[0]}" ref="file" v-on:change="handleFileUpload()" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" pattern="^.+\.(xlsx|xls|csv)$" required/>
+                            <div class="invalid-feedback text-center" v-if="errors.length > 0">
+                                {{ errors[0].message}}
+                            </div>
+
+                            <div class="justify-content-center">
+                                <span class="badge badge-info position-relative" :style="`left: ${uploadPercentage ? uploadPercentage - 4 : 0}% `"> {{ uploadPercentage }}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped" :class="{'progress-bar-animated': uploadPercentage < 100}" role="progressbar" max="100" :value.prop="uploadPercentage" aria-valuemin="0" aria-valuemax="100" :style="`width: ${uploadPercentage}%`"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-md-6">
+
                         <div class="form-group">
-                            <label for="schedule">jadwalkan Pengiriman:</label>
-                            <h3> {{ today }}</h3>
-<!--                            <input type="date" name="schedule" id="schedule" :class="{'is-invalid': scheduleError[0]}"  v-model="schedule" class="form-control" required>-->
-<!--                            <div class="invalid-feedback text-center" v-if="scheduleError.length > 0">-->
-<!--                                {{ scheduleError[0].message}}-->
-<!--                            </div>-->
+                            <label for="origin">Asal <span class="text-danger">*</span></label>
+                            <input type="text" id="origin" v-model="origin" name="origin" class="form-control form-control-border" required>
                         </div>
-                        <button class="btn btn-success float-right" @click="upload"><i class="fas fa-upload"></i> Upload File</button>
+                        <div class="form-group">
+                            <label for="destination">Destinasi <span class="text-danger">*</span></label>
+                            <input type="text" id="destination" v-model="destination" name="destination" class="form-control form-control-border" required>
+                        </div>
                     </div>
                 </div>
+                <button class="btn btn-success float-right" @click="upload"><i class="fas fa-upload"></i> Upload File</button>
             </div>
         </div>
         <!-- /.card -->
-
-
 
         <div class="modal fade" id="modal-upload">
             <div class="modal-dialog modal-dialog-centered">
@@ -72,19 +66,22 @@
 <script>
 import jquery from 'jquery'
 import moment from 'moment'
+import Swal from 'sweetalert2'
 
 moment.locale('id');
 
 export default {
     name: "StockTrip",
+    components: {
+        Swal
+    },
     data(){
         return {
             file: '',
             uploadPercentage: 0,
             errors: [],
-            // schedule: Date,
-            scheduleError: [],
-            today: Date
+            origin: '',
+            destination: ''
         }
     },
     methods: {
@@ -93,27 +90,27 @@ export default {
         },
         upload(){
 
-            if (!this.file){
-                this.errors = [{
-                    error: true,
-                    message: 'Harap Tambahkan File!'
-                }]
+            if (this.origin === '' || this.destination === ''){
+
+                this.openAlert('warning', 'Harap Isi Bidang Yang Dibutuhkan!')
+
+                this.file = ''
 
                 this.closeModal()
 
                 return
             }
 
-            if (!this.schedule instanceof Date){
-                this.scheduleError = [{
-                    error: true,
-                    message: 'Harap Tambahkan Tanggal!'
-                }]
-
-                this.closeModal()
-
-                return
-            }
+            // if (!this.file){
+            //     this.errors = [{
+            //         error: true,
+            //         message: 'Harap Tambahkan File!'
+            //     }]
+            //
+            //     this.closeModal()
+            //
+            //     return
+            // }
 
             jquery("#modal-upload").modal('show')
 
@@ -128,6 +125,8 @@ export default {
               Add the form data we need to submit
             */
             formData.append('file', this.file);
+            formData.append('origin', this.origin);
+            formData.append('destination', this.destination);
 
             /*
               Make the request to the POST /single-file URL
@@ -142,23 +141,29 @@ export default {
                         this.uploadPercentage = Math.round( ( progressEvent.loaded / progressEvent.total ) * 100 );
                     }.bind(this)
                 }
-            ).then(function(){
-                console.log('SUCCESS!!');
-                if (this.uploadPercentage >= 100){
-
-                }
-            })
-                .catch(function(){
-                    console.log('FAILURE!!');
-                });
+            ).then(res => {
+                this.closeModal()
+                this.openAlert('success', res.data.message)
+            }).catch(err => {
+                this.closeModal()
+                this.openAlert('error', err.response.data.message)
+            });
         },
-        checkFile(e){
-            console.log(e)
+        openAlert(icon = 'success', message){
+            Swal.fire({
+                position: 'top-end',
+                icon: icon,
+                title: message,
+                showConfirmButton: false,
+                timer: 5000
+            })
         },
         closeModal(){
             this.file = ''
             this.uploadPercentage = 0
             this.errors = []
+
+            jquery("#modal-upload").modal('hide')
         },
         setToday(){
             let today = new Date();
