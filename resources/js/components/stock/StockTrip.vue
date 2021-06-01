@@ -33,6 +33,10 @@
                             <label for="destination">Destinasi <span class="text-danger">*</span></label>
                             <input type="text" id="destination" v-model="destination" name="destination" class="form-control form-control-border" required>
                         </div>
+                        <div class="form-group">
+                            <label for="pj">Penanggung Jawab <span class="text-danger">*</span></label>
+                            <input type="text" id="pj" v-model="pj" name="pj" class="form-control form-control-border" required>
+                        </div>
                     </div>
                 </div>
                 <button class="btn btn-success float-right" @click="upload"><i class="fas fa-upload"></i> Upload File</button>
@@ -81,7 +85,8 @@ export default {
             uploadPercentage: 0,
             errors: [],
             origin: '',
-            destination: ''
+            destination: '',
+            pj: ''
         }
     },
     methods: {
@@ -90,7 +95,7 @@ export default {
         },
         upload(){
 
-            if (this.origin === '' || this.destination === ''){
+            if (this.origin === '' || this.destination === '' || this.pj === ''){
 
                 this.openAlert('warning', 'Harap Isi Bidang Yang Dibutuhkan!')
 
@@ -100,17 +105,6 @@ export default {
 
                 return
             }
-
-            // if (!this.file){
-            //     this.errors = [{
-            //         error: true,
-            //         message: 'Harap Tambahkan File!'
-            //     }]
-            //
-            //     this.closeModal()
-            //
-            //     return
-            // }
 
             jquery("#modal-upload").modal('show')
 
@@ -127,6 +121,7 @@ export default {
             formData.append('file', this.file);
             formData.append('origin', this.origin);
             formData.append('destination', this.destination);
+            formData.append('pj', this.pj);
 
             /*
               Make the request to the POST /single-file URL
@@ -144,6 +139,7 @@ export default {
             ).then(res => {
                 this.closeModal()
                 this.openAlert('success', res.data.message)
+                window.location.href = '/stock/cek-trip'
             }).catch(err => {
                 this.closeModal()
                 this.openAlert('error', err.response.data.message)
@@ -151,11 +147,10 @@ export default {
         },
         openAlert(icon = 'success', message){
             Swal.fire({
-                position: 'top-end',
+                position: 'center',
                 icon: icon,
                 title: message,
-                showConfirmButton: false,
-                timer: 5000
+                showConfirmButton: true
             })
         },
         closeModal(){

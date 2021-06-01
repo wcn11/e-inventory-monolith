@@ -22,4 +22,5 @@ Route::group(['middleware' => 'auth:api'], function (){
     Route::get('/user', 'StockController@coba');
     Route::post('/stock/upload', 'StockController@storeUpload');
     Route::delete('/category/destroy/{id}', 'CategoryController@destroy');
+    Route::get('/stock/chart', 'StockController@getChartData');
 });

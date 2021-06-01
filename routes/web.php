@@ -19,16 +19,18 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::group(['middleware' => ['auth']], function (){
-//    Route::get('/', 'DashboardController@index')->name('dashboard');
-    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    Route::get('/', 'DashboardController@index')->name('dashboard');
 
     Route::group(['prefix' => '/stock'], function (){
         Route::get('/', 'StockController@index')->name('stok');
         Route::get('/trip', 'StockController@trip')->name('stok.trip');
         Route::get('/cek-trip', 'StockController@checkTrip')->name('stok.trip.cek');
+        Route::get('/history/{id}/view', 'StockController@view')->name('stok.riwayat.lihat');
+        Route::get('/history/{id}/download', 'StockController@downloadPDF')->name('stok.riwayat.download');
+        Route::get('/chart', 'StockController@getChartData');
     });
 
     Route::group(['prefix' => '/category'], function (){

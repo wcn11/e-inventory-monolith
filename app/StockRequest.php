@@ -17,4 +17,9 @@ class StockRequest extends Model
     protected $keyType = 'string';
 
     protected $guarded = [];
+
+    public function stock_request_item(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StockRequestItem::class);
+    }
 }

@@ -16,4 +16,9 @@ class Product extends Model
     public function category(){
         return $this->belongsTo(Category::class);
     }
+
+    public function stock_reques_itemt(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(StockRequestItem::class, 'product_stock_request_item');
+    }
 }

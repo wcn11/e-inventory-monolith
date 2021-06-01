@@ -31,7 +31,6 @@
                                 <div class="col-lg-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h3 class="card-title">Simple Full Width Table</h3>
 
                                             <div class="card-tools">
                                                 <a href="{{ route('pengguna.create') }}" class="btn btn-success"><i class="fas fa-user-tag"></i> Tambah Pengguna</a>

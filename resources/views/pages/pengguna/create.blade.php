@@ -34,7 +34,6 @@
                                     <div class="form-row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                {{ $errors }}
                                                 <label for="name">Nama <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control form-control-border" name="name" id="name" placeholder="Nama Pengguna" required>
                                             </div>
@@ -52,12 +51,10 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="posisi">Wewenang / Otoritas <span class="text-danger">*</span></label>
-                                                <select class="custom-select form-control-border" name="position" id="position" required>
-                                                    <option>Administrator</option>
-                                                    <option>Pusat</option>
-                                                    <option>Supplier</option>
-                                                    <option>Mitra Pusat</option>
-                                                    <option>Viewer</option>
+                                                <select class="custom-select form-control-border" name="role" id="position" required>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="row">

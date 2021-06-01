@@ -7,10 +7,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Sistem Elektronik Stock Beliayam.com</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="shortcut icon" href="{{ asset('images/icon-bac.png') }}" type="image/x-icon">
 
     <!-- Styles -->
 {{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
@@ -44,27 +45,6 @@
 
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
-            <!-- Navbar Search -->
-            <li class="nav-item">
-                <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-                    <i class="fas fa-search"></i>
-                </a>
-                <div class="navbar-search-block">
-                    <form class="form-inline">
-                        <div class="input-group input-group-sm">
-                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                            <div class="input-group-append">
-                                <button class="btn btn-navbar" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
@@ -77,10 +57,10 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="index3.html" class="brand-link">
+        <a href="{{ route('dashboard') }}" class="brand-link">
             <img src="{{ asset('images/icon-bac.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                  style="opacity: .8">
-            <span class="brand-text font-weight-light">Inventaris BAC</span>
+            <span class="brand-text font-weight-light">E-Stock BAC</span>
         </a>
 
         <!-- Sidebar -->
@@ -91,9 +71,9 @@
                     <img src="{{ asset('images/icon-bac.png') }}" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">Wahyu Chandra</a>
+                    <a href="#" class="d-block">{{ auth()->user()->name }}</a>
                     <span class="text-center text-white">
-                        Sistem Administrator
+                        {{ auth()->user()->roles[0]->name }}
                     </span>
                 </div>
             </div>
@@ -101,27 +81,28 @@
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- Add icons to the links using the .nav-icon class
-                       with font-awesome or any other icon font library -->
+
+                    @can('admin')
+                        <li class="nav-item menu-open">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-fastest"></i>
+                                <p>
+                                    Dashboard
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('dashboard') }}" class="nav-link">
+                                        <i class="fas fa-tachometer-alt-fastest nav-icon"></i>
+                                        <p>Dashboard</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
                     <li class="nav-item menu-open">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-tachometer-fastest"></i>
-                            <p>
-                                Dashboard
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('dashboard') }}" class="nav-link">
-                                    <i class="fas fa-tachometer-alt-fastest nav-icon"></i>
-                                    <p>Dashboard</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item menu-open">
-                        <a href="#" class="nav-link">
+                        <a href="#" class="nav-link active">
                             <i class="nav-icon fas fa-inventory"></i>
                             <p>
                                 Stock
@@ -130,26 +111,27 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('stok') }}" class="nav-link">
+                                <a href="{{ route('stok') }}" class="nav-link link-stock">
                                     <i class="fas fa-pallet nav-icon"></i>
                                     <p>Stock</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('stok.trip') }}" class="nav-link">
+                                <a href="{{ route('stok.trip') }}" class="nav-link link-stock-trip">
                                     <i class="fas fa-truck-moving nav-icon"></i>
                                     <p>Buat Perjalanan Stock</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('stok.trip.cek') }}" class="nav-link">
+                                <a href="{{ route('stok.trip.cek') }}" class="nav-link link-stock-history">
                                     <i class="fas fa-clipboard-list-check nav-icon"></i>
-                                    <p>Cek Stock Jalan</p>
+                                    <p>Riwayat Stock</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item menu-open">
+                    @can('admin')
+                        <li class="nav-item menu-open">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-boxes"></i>
                             <p>
@@ -172,7 +154,10 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item menu-open">
+                    @endcan
+
+                    @can('admin')
+                        <li class="nav-item menu-open">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-user"></i>
                             <p>
@@ -189,7 +174,10 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item menu-open">
+                    @endcan
+
+                    @can('admin')
+                        <li class="nav-item menu-open">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-sliders-h"></i>
                             <p>
@@ -213,13 +201,20 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-header">User Settings</li>
-                    <li class="nav-item">
-                        <a href="{{ route('log') }}" class="nav-link">
-                            <i class="fas fa-cogs nav-icon"></i>
-                            <p>Pengaturan</p>
-                        </a>
-                    </li>
+                    @endcan
+
+                    @can('admin')
+                        <li class="nav-header">User Settings</li>
+                    @endcan
+
+                    @can('admin')
+                        <li class="nav-item">
+                            <a href="{{ route('log') }}" class="nav-link">
+                                <i class="fas fa-cogs nav-icon"></i>
+                                <p>Pengaturan</p>
+                            </a>
+                        </li>
+                    @endcan
                     <li class="nav-item">
                         <a href="{{ route('log') }}" class="nav-link">
                             <i class="fas fa-sign-out-alt nav-icon"></i>
@@ -250,61 +245,6 @@
         </div>
     </footer>
 </div>
-
-{{--        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">--}}
-{{--            <div class="container">--}}
-{{--                <a class="navbar-brand" href="{{ url('/') }}">--}}
-{{--                    {{ config('app.name', 'Laravel') }}--}}
-{{--                </a>--}}
-{{--                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">--}}
-{{--                    <span class="navbar-toggler-icon"></span>--}}
-{{--                </button>--}}
-
-{{--                <div class="collapse navbar-collapse" id="navbarSupportedContent">--}}
-{{--                    <!-- Left Side Of Navbar -->--}}
-{{--                    <ul class="navbar-nav mr-auto">--}}
-
-{{--                    </ul>--}}
-
-{{--                    <!-- Right Side Of Navbar -->--}}
-{{--                    <ul class="navbar-nav ml-auto">--}}
-{{--                        <!-- Authentication Links -->--}}
-{{--                        @guest--}}
-{{--                            <li class="nav-item">--}}
-{{--                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>--}}
-{{--                            </li>--}}
-{{--                            @if (Route::has('register'))--}}
-{{--                                <li class="nav-item">--}}
-{{--                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>--}}
-{{--                                </li>--}}
-{{--                            @endif--}}
-{{--                        @else--}}
-{{--                            <li class="nav-item dropdown">--}}
-{{--                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>--}}
-{{--                                    {{ Auth::user()->name }}--}}
-{{--                                </a>--}}
-
-{{--                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
-{{--                                    <a class="dropdown-item" href="{{ route('logout') }}"--}}
-{{--                                       onclick="event.preventDefault();--}}
-{{--                                                     document.getElementById('logout-form').submit();">--}}
-{{--                                        {{ __('Logout') }}--}}
-{{--                                    </a>--}}
-
-{{--                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">--}}
-{{--                                        @csrf--}}
-{{--                                    </form>--}}
-{{--                                </div>--}}
-{{--                            </li>--}}
-{{--                        @endguest--}}
-{{--                    </ul>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </nav>--}}
-
-{{--        <main class="py-4">--}}
-{{--            @yield('content')--}}
-{{--        </main>--}}
 
     <!-- REQUIRED SCRIPTS -->
 

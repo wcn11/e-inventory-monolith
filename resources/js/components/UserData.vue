@@ -18,7 +18,7 @@
             <td> {{ i.name }} </td>
             <td> {{ i.email }} </td>
             <td> {{ i.is_enable }}</td>
-            <td> Administrator</td>
+            <td> {{ i.roles[0].name}}</td>
             <td> {{ i.created_at | formatDate }}</td>
             <td>
                 <a :href="`/user/edit/${i.id}`" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Edit Kategori"><i class="fas fa-edit"></i></a>

@@ -6,12 +6,12 @@ use App\Imports\ProductImport;
 use App\Product;
 use App\StockRequest;
 use App\StockRequestItem;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class StockController extends Controller
 {
@@ -20,10 +20,13 @@ class StockController extends Controller
 
     protected $model;
 
-    public function __construct(Request $request, Product $model)
+    protected $pdf;
+
+    public function __construct(Request $request, Product $model, PDF $pdf)
     {
         $this->request = $request;
         $this->model = $model;
+        $this->pdf = $pdf;
     }
 
     public function builder(): \Illuminate\Database\Query\Builder
@@ -32,7 +35,11 @@ class StockController extends Controller
     }
 
     public function index(Request $request){
-        return view('pages.stok.index');
+
+        $user = auth()->user()->id;
+
+        $stocks = StockRequest::select('total_stock')->where("user_id", $user)->sum('total_stock');
+        return view('pages.stok.index', compact('stocks'));
     }
 
     public function upload(Request $request){
@@ -50,11 +57,13 @@ class StockController extends Controller
         $validator = Validator::make($this->request->all(),[
             'file' => 'mimes:csv,xlsx,xls',
             'origin' => 'required',
-            'destination' => 'required'
+            'destination' => 'required',
+            'pj' => 'required'
         ], [
             'file.mimes' => 'Format File Tidak Didukung!',
             'origin.required' => 'Asal Harus Diisi!',
-            'destination.required' => 'Tujuan Harus Diisi!'
+            'destination.required' => 'Tujuan Harus Diisi!',
+            'pj.required' => 'Penanggung Jawab Harus Diisi!'
         ]);
 
         if ($validator->fails()){
@@ -66,15 +75,8 @@ class StockController extends Controller
 
         try {
 
-            $products = $this->model->all(['id','sku']);
+            $products = $this->model->all();
             $data = Excel::toArray(new ProductImport(), $this->request->file('file'));
-
-            if (strtolower(substr(last($data[0])[0], 0, 3)) !== strtolower('KR-')){
-                return response()->json([
-                    'success' => false,
-                    'message' => "Data Tidak Sesuai Dengan Format Kode Standar!"
-                ], 403);
-            }
 
             $tempSKUProduct = [];
 
@@ -82,45 +84,59 @@ class StockController extends Controller
                 $tempSKUProduct[] = $p->sku;
             }
 
-            $index = [];
-            $totalSKU = [];
-
+//          validasi product
             foreach ($data[0] as $key => $value) {
 
-                if (in_array(strtolower($value[0]), $tempSKUProduct, true)) {
-
-                    if (empty($index)){
-
-                        $index = [
-                            'sku' => $value[0] ,
-                            'index' => $key + 1,
-                        ];
-                        continue;
-                    }
-
-                } else if (strtolower(substr($value[0], 0, 3)) === strtolower('KR-')) {
-
-                    if (empty($index)){
+                if (!in_array(strtolower($value[0]), $tempSKUProduct, true)) {
                         return response()->json([
                             'success' => false,
                             'message' => "Data Pada Baris " . ($key + 1)  . " Tidak Sesuai Dengan Format Kode Standar!"
                         ], 404);
-                    }
-
-                    $totalSKU[] = [
-                        'total' => ( $key + 1 ) - $index['index'],
-                        'sku' => $index['sku'],
-                        'sack' => $value[0],
-                        'weight' => (double) str_replace('KR-', '', $value[0])
-                    ];
-
-                    $index = [];
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => "Data Pada Baris " . ($key + 1) . " Tidak Sesuai Dengan Format Kode Standar!"
-                    ], 403);
                 }
+            }
+
+            $totalSKU = [];
+
+            $toSort = collect($data[0])->sort()->values()->all();
+
+            foreach ($tempSKUProduct as $key => $p){
+
+                $index = [
+                    'sku' => '',
+                    'total' => 0,
+                    'weight_per_unit' => 0,
+                    'weight' => 0,
+                    'product_name' => ''
+                ];
+
+                foreach ($toSort as $value) {
+
+                    if (strtolower($p) === strtolower($value[0])){
+
+                        $index = [
+                            'product_id' => $products[$key]['id'],
+                            'product_name' => $products[$key]['name'],
+                            'weight_per_unit' => $products[$key]['weight'],
+                            'sku' => $p,
+                            'total' => $index['total'] += 1,
+                            'weight' => $products[$key]['weight']
+                        ];
+
+                    }
+                }
+
+                if (empty($index['sku'])){
+                    continue;
+                }
+
+                $totalSKU[] = [
+                    'product_id' => $index['product_id'],
+                    'product_name' => $index['product_name'],
+                    'sku' => $index['sku'],
+                    'total' => $index['total'],
+                    'weight_per_unit' => $index['weight_per_unit'],
+                    'total_weight' => $index['weight'] * $index['total']
+                ];
             }
 
             $user = auth()->user()->id;
@@ -128,28 +144,30 @@ class StockController extends Controller
             $id_stock = strtoupper("BAC-" . substr(md5(uniqid(rand(), true)),0,7));
 
             $total_weight = 0;
-            $total_sack = 0;
             foreach ($totalSKU as $total){
-                $total_weight += $total['weight'];
-                $total_sack++;
+                $total_weight += $total['total_weight'];
             }
 
-            $stock_request = StockRequest::create([
+            StockRequest::create([
                 'id' => $id_stock,
                 'user_id' => $user,
                 'total_stock' => collect($totalSKU)->sum('total'),
-                'total_sack' => $total_sack,
                 'total_weight' => $total_weight,
                 'origin' => $this->request['origin'],
                 'destination' => $this->request['destination'],
-                'date' => now()
+                'date' => now(),
+                'pj' => $this->request['pj'],
             ]);
-
 
             foreach ($totalSKU as $total){
                 StockRequestItem::create([
                     'stock_request_id' => $id_stock,
                     'sku' => $total['sku'],
+                    'product_id' => $total['product_id'],
+                    'product_name' => $total['product_name'],
+                    'total' => $total['total'],
+                    'weight' => $total['total_weight'],
+                    'weight_per_unit' => $total['weight_per_unit']
                 ]);
             }
 
@@ -169,8 +187,68 @@ class StockController extends Controller
         ]);
     }
 
+    public function history(){
+
+        $user = auth()->user()->id;
+
+        $history = StockRequest::where("user_id", $user)->orderBy('created_at', 'DESC')->with('stock_request_item')->get();
+
+        return view('pages.stok.history', compact('history'));
+    }
+
+    public function downloadPDF($id){
+
+        $this->checkStockTripById($id);
+
+        $history = StockRequest::where("id", $id)->with('stock_request_item')->first();
+
+        $this->pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $pdf = $this->pdf->loadView('pages.stok.download', array('history' =>$history));
+        return $pdf->download('invoice ' . $id . '.pdf');
+    }
+
+    public function view($id){
+
+        $this->checkStockTripById($id);
+
+        $history = StockRequest::where("id", $id)->with('stock_request_item')->first();
+
+        return view('pages.stok.view', compact('history'));
+    }
+
+    public function checkStockTripById($id){
+        return StockRequest::findOrFail($id);
+    }
+
     public function checkTrip(Request $request)
     {
-        return view('pages.stok.check');
+
+        $user = auth()->user()->id;
+
+        $data = StockRequest::where("user_id", $user)->orderBy('created_at', 'DESC')->with('stock_request_item')->get();
+        return view('pages.stok.check', compact('data'));
+    }
+
+    public function getChartData(){
+
+        try {
+            $user = auth()->user()->id;
+
+            $from = $this->request['from'];
+            $to = $this->request['to'];
+            $data = StockRequest::where("user_id", $user)->whereBetween('created_at', [$from, $to])->orderBy('created_at', 'DESC')->with('stock_request_item')->get();
+
+            return response()->json([
+                "success" => true,
+                "data" => $data
+            ]);
+
+        }catch (\Exception $e){
+            return response()->json([
+                "success" => false,
+                "message" => "Terjadi Kesalahan, Silahkan Muat Ulang Halaman!"
+            ]);
+        }
     }
 }

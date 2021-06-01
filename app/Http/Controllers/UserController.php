@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Services\ImageInterventionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -24,11 +27,13 @@ class UserController extends Controller
     }
 
     public function index(){
-        $users = $this->model->all();
+        $users = User::with('roles')->get();
+
         return view('pages.pengguna.index', compact('users'));
     }
     public function create(){
-        return view('pages.pengguna.create');
+        $roles = Role::all();
+        return view('pages.pengguna.create', compact('roles'));
     }
     public function edit($id){
         $user = $this->model->find($id);
@@ -36,6 +41,7 @@ class UserController extends Controller
     }
 
     public function store(){
+
         $validator = Validator::make($this->request->all(), [
             'name' => 'required',
             'email' => 'required',
@@ -46,16 +52,19 @@ class UserController extends Controller
             return Redirect::back()->withErrors($validator->errors());
         }
 
-        if (!$this->request->has('is_enable')){
+        if (! isset($this->request['is_enable'])){
             $this->request['is_enable'] = 'off';
         }
 
-        User::create([
+        $user = User::create([
             'name' => $this->request['name'],
             'email' => $this->request['email'],
+            'is_enable' => $this->request['is_enable'],
             'password' => Hash::make($this->request['password']),
             'api_token' => Str::random(80),
         ]);
+
+        $user->assignRole($this->request['role']);
 
         return redirect()->route('pengguna');
     }

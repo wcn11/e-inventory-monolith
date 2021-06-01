@@ -36,6 +36,7 @@ Vue.component('stock-terbanyak', require('./components/Dashboard/StokTerbanyak')
 Vue.component('stock-menipis', require('./components/Dashboard/StokMenipis').default);
 Vue.component('stock-trip', require('./components/stock/StockTrip').default);
 Vue.component('cek-stok', require('./components/stock/CekStock').default);
+Vue.component('tabel-stok', require('./components/stock/TabelStock').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

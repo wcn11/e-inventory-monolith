@@ -4,7 +4,7 @@
 
     <div class="login-box">
         <div class="login-logo">
-            <a href="../../index2.html"><b>STOCK</b> - Beliayamcom</a>
+            <a href="{{ route('login') }}"><b>STOCK</b> - Beliayamcom</a>
         </div>
         <!-- /.login-logo -->
         <div class="card">
@@ -63,15 +63,15 @@
                     </div>
                 </form>
 
-                <div class="social-auth-links text-center mb-3">
-                    <p>- ATAU -</p>
-                    <a href="#" class="btn btn-block btn-primary">
-                        <i class="fab fa-facebook mr-2"></i> Masuk Menggunakan Facebook
-                    </a>
-                    <a href="#" class="btn btn-block btn-danger">
-                        <i class="fab fa-google-plus mr-2"></i> Masuk Menggunakan Gmail
-                    </a>
-                </div>
+{{--                <div class="social-auth-links text-center mb-3">--}}
+{{--                    <p>- ATAU -</p>--}}
+{{--                    <a href="#" class="btn btn-block btn-primary">--}}
+{{--                        <i class="fab fa-facebook mr-2"></i> Masuk Menggunakan Facebook--}}
+{{--                    </a>--}}
+{{--                    <a href="#" class="btn btn-block btn-danger">--}}
+{{--                        <i class="fab fa-google-plus mr-2"></i> Masuk Menggunakan Gmail--}}
+{{--                    </a>--}}
+{{--                </div>--}}
                 <!-- /.social-auth-links -->
             </div>
             <!-- /.login-card-body -->
