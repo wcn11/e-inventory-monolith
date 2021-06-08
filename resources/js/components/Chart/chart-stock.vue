@@ -2,7 +2,7 @@
     <!-- /.row -->
     <div class="row">
 
-        <div class="col-md-4">
+        <div class="col-md-2">
             <div class="info-box bg-gradient-success bar-stock">
                 <span class="info-box-icon"><i class="fas fa-sort-amount-up-alt"></i></span>
 
@@ -14,17 +14,36 @@
             </div>
             <!-- /.info-box -->
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card card-default">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-cloud-upload-alt"></i> Upload Data</h3>
                 </div>
                 <div class="card-body quick-menu-upload">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <a type="button" class="btn btn-info m-1" href="/stock/trip">
-                                <i class="fas fa-upload"></i> Mulai Upload
+                                <i class="fas fa-upload"></i> Upload
                             </a>
+                        </div>
+                        <div class="col-md-9" style="border: 2px solid black; border-radius: 1rem;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <a type="button" class="btn btn-info m-1" href="/stock/berita-acara-pdf">
+                                        <i class="fas fa-file-pdf"></i> Download Berita Acara .pdf
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a type="button" class="btn btn-info m-1" href="/stock/berita-acara-word">
+                                        <i class="fas fa-file-word"></i> Download Berita Acara .docx
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a type="button" class="btn btn-info m-1" href="/stock/berita-acara-example">
+                                        <i class="fas fa-file-check"></i> Download Contoh
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

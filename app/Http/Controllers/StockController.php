@@ -8,6 +8,7 @@ use App\StockRequest;
 use App\StockRequestItem;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -87,7 +88,7 @@ class StockController extends Controller
 //          validasi product
             foreach ($data[0] as $key => $value) {
 
-                if (!in_array(strtolower($value[0]), $tempSKUProduct, true)) {
+                if (!in_array($value[0], $tempSKUProduct)) {
                         return response()->json([
                             'success' => false,
                             'message' => "Data Pada Baris " . ($key + 1)  . " Tidak Sesuai Dengan Format Kode Standar!"
@@ -250,5 +251,35 @@ class StockController extends Controller
                 "message" => "Terjadi Kesalahan, Silahkan Muat Ulang Halaman!"
             ]);
         }
+    }
+
+    public function downloadAsPDF(){
+        $file= public_path(). '/berita_acara/BERITA_ACARA_STOK_MANUAL.pdf';
+
+        $headers = array(
+            'Content-Type: application/pdf',
+        );
+
+        return response()->download($file, 'BERITA_ACARA_STOK_MANUAL.pdf', $headers);
+    }
+
+    public function downloadAsWORD(){
+        $file= public_path(). '/berita_acara/BERITA_ACARA_STOK_MANUAL.docx';
+
+        $headers = array(
+            'Content-Type: application/docx',
+        );
+
+        return response()->download($file, 'BERITA_ACARA_STOK_MANUAL.docx', $headers);
+    }
+
+    public function example(){
+        $file= public_path(). '/berita_acara/CONTOH_BERITA_ACARA_STOK_MANUAL.pdf';
+
+        $headers = array(
+            'Content-Type: application/docx',
+        );
+
+        return response()->download($file, 'CONTOH_BERITA_ACARA_STOK_MANUAL.pdf', $headers);
     }
 }

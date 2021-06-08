@@ -31,6 +31,9 @@ Route::group(['middleware' => ['auth']], function (){
         Route::get('/history/{id}/view', 'StockController@view')->name('stok.riwayat.lihat');
         Route::get('/history/{id}/download', 'StockController@downloadPDF')->name('stok.riwayat.download');
         Route::get('/chart', 'StockController@getChartData');
+        Route::get('berita-acara-pdf', 'StockController@downloadAsPDF');
+        Route::get('berita-acara-word', 'StockController@downloadAsWORD');
+        Route::get('berita-acara-example', 'StockController@example');
     });
 
     Route::group(['prefix' => '/category'], function (){

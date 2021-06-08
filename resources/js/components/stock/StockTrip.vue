@@ -139,7 +139,7 @@ export default {
             ).then(res => {
                 this.closeModal()
                 this.openAlert('success', res.data.message)
-                window.location.href = '/stock/cek-trip'
+                // window.location.href = '/stock/cek-trip'
             }).catch(err => {
                 this.closeModal()
                 this.openAlert('error', err.response.data.message)
