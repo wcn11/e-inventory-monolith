@@ -85,14 +85,24 @@ class StockController extends Controller
                 $tempSKUProduct[] = $p->sku;
             }
 
-//          validasi product
             foreach ($data[0] as $key => $value) {
 
-                if (!in_array($value[0], $tempSKUProduct)) {
+                if (empty(strtoupper($value[0]))){
+                    continue;
+                }
+
+                if (!in_array(strtoupper($value[0]), $tempSKUProduct)) {
                         return response()->json([
                             'success' => false,
                             'message' => "Data Pada Baris " . ($key + 1)  . " Tidak Sesuai Dengan Format Kode Standar!"
                         ], 404);
+                }
+
+                if (!is_numeric($value[1])){
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Data Pada Baris " . ($key + 1)  . " Bukan Berupa Angka!"
+                    ], 404);
                 }
             }
 
@@ -119,7 +129,7 @@ class StockController extends Controller
                             'product_name' => $products[$key]['name'],
                             'weight_per_unit' => $products[$key]['weight'],
                             'sku' => $p,
-                            'total' => $index['total'] += 1,
+                            'total' => $value[1],
                             'weight' => $products[$key]['weight']
                         ];
 
