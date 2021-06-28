@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use App\Category;
+use App\Codes\Models\Category;
 
 class CategoryController extends Controller
 {

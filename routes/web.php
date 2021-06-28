@@ -29,6 +29,8 @@ Route::group(['middleware' => ['auth']], function (){
         Route::get('/trip', 'StockController@trip')->name('stok.trip');
         Route::get('/cek-trip', 'StockController@checkTrip')->name('stok.trip.cek');
         Route::get('/history/{id}/view', 'StockController@view')->name('stok.riwayat.lihat');
+        Route::get('/opname', 'StockController@opname')->name('stok.opname');
+
         Route::get('/history/{id}/download', 'StockController@downloadPDF')->name('stok.riwayat.download');
         Route::get('/chart', 'StockController@getChartData');
         Route::get('berita-acara-pdf', 'StockController@downloadAsPDF');
@@ -55,19 +57,31 @@ Route::group(['middleware' => ['auth']], function (){
         Route::delete('/destroy/{id}', 'ProductController@destroy')->name('barang.destroy');
     });
 
-//    Route::group(['prefix' => '/peran'], function (){
-//
-//        Route::get('/', 'RolesController@index')->name('peran');
-//        Route::get('/create', 'RolesController@create')->name('peran.create');
-//    });
+    Route::group(['prefix' => '/roles'], function (){
+
+        Route::get('/', 'RolesController@index')->name('roles');
+        Route::get('/create', 'RolesController@create')->name('roles.create');
+        Route::get('/delete/{id}', 'RolesController@delete')->name('roles.delete');
+        Route::get('/edit/{id}', 'RolesController@edit')->name('roles.edit');
+        Route::get('/search', 'RolesController@search')->name('roles.search');
+        Route::get('/give-permission', 'RolesController@givePermission')->name('roles.give.permission');
+        Route::get('/role-names', 'RolesController@roles')->name('roles.get.name');
+    });
+
+    Route::group(['prefix' => '/permission'], function (){
+
+        Route::get('/', 'PermissionController@index')->name('permission');
+        Route::get('/create', 'PermissionController@create')->name('permission.create');
+        Route::get('/search', 'PermissionController@search')->name('permission.search');
+    });
 
     Route::group(['prefix' => '/user'], function (){
 
-        Route::get('/', 'UserController@index')->name('pengguna');
-        Route::get('/create', 'UserController@create')->name('pengguna.create');
-        Route::post('/store', 'UserController@store')->name('pengguna.store');
-        Route::get('/edit/{id}', 'UserController@edit')->name('pengguna.edit');
-        Route::put('/update/1', 'UserController@update')->name('pengguna.update');
+        Route::get('/', 'UserController@index')->name('user');
+        Route::get('/create', 'UserController@create')->name('user.create');
+        Route::post('/store', 'UserController@store')->name('user.store');
+        Route::get('/edit/{id}', 'UserController@edit')->name('user.edit');
+        Route::put('/update/{id}', 'UserController@update')->name('user.update');
     });
 
     Route::group(['prefix' => '/manual'], function (){
@@ -77,7 +91,7 @@ Route::group(['middleware' => ['auth']], function (){
 });
 
 
-Route::get('/log', function (){
+Route::get('/logout', function (){
     \Illuminate\Support\Facades\Auth::logout();
     return Redirect::to('login');
-})->name('log');
+})->name('logout');

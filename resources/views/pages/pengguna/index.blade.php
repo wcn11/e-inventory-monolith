@@ -33,7 +33,7 @@
                                         <div class="card-header">
 
                                             <div class="card-tools">
-                                                <a href="{{ route('pengguna.create') }}" class="btn btn-success"><i class="fas fa-user-tag"></i> Tambah Pengguna</a>
+                                                <a href="{{ route('user.create') }}" class="btn btn-success"><i class="fas fa-user-tag"></i> Tambah Pengguna</a>
                                             </div>
                                         </div>
                                         <!-- /.card-header -->
@@ -53,14 +53,19 @@
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
+
+        @if($message = Session::get('user_created'))
+
+            <success-toastr message="{{ $message }}"></success-toastr>
+
+        @endif
+
+
+        @if($message = Session::get('user_updated'))
+
+            <success-toastr message="{{ $message }}"></success-toastr>
+
+        @endif
+
     </div>
 @endsection
-
-@push('css')
-    <style>
-    </style>
-    @endpush
-
-    @push('scripts')
-    </script>
-@endpush

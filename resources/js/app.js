@@ -6,12 +6,20 @@
 
 require('./bootstrap');
 
-import Vue from  'vue'
+import Vue from 'vue'
 import VueClip from 'vue-clip'
+
 import './plugins/jquery-ui.css'
 
-Vue.use(VueClip)
+import toastr from 'vue-toastr'
 
+import VueSweetalert2 from 'vue-sweetalert2';
+// import './components/Helper/Helper'
+// import 'sweetalert2/dist/sweetalert2.min.css';
+
+Vue.use(toastr)
+Vue.use(VueClip)
+Vue.use(VueSweetalert2);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -22,7 +30,7 @@ Vue.use(VueClip)
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
+Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('user-data', require('./components/UserData.vue').default);
 Vue.component('data-barang', require('./components/DataBarang.vue').default);
 Vue.component('data-kategori', require('./components/DataKategori.vue').default);
@@ -37,6 +45,11 @@ Vue.component('stock-menipis', require('./components/Dashboard/StokMenipis').def
 Vue.component('stock-trip', require('./components/stock/StockTrip').default);
 Vue.component('cek-stok', require('./components/stock/CekStock').default);
 Vue.component('tabel-stok', require('./components/stock/TabelStock').default);
+Vue.component('roles', require('./components/Roles/Roles').default);
+Vue.component('roles-update', require('./components/Roles/RolesUpdate').default);
+Vue.component('delete-confirmation', require('./components/Helper/ModalDeleteConfirmation').default);
+Vue.component('success-toastr', require('./components/Utilities/Toastr').default);
+Vue.component('opname', require('./components/stock/Opname/OpnameIndex').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

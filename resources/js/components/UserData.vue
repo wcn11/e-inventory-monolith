@@ -17,8 +17,12 @@
             <td> {{ i.id }}</td>
             <td> {{ i.name }} </td>
             <td> {{ i.email }} </td>
-            <td> {{ i.is_enable }}</td>
-            <td> {{ i.roles[0].name}}</td>
+            <td> {{ i.is_enable ? i.is_enable : 'off' }}</td>
+            <td>
+                <span class="badge badge-secondary" v-for="role in i.roles" :key="role.id">
+                    {{ role.name }}
+                </span>
+            </td>
             <td> {{ i.created_at | formatDate }}</td>
             <td>
                 <a :href="`/user/edit/${i.id}`" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Edit Kategori"><i class="fas fa-edit"></i></a>

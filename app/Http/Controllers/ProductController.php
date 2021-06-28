@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Product;
+use App\Codes\Models\Category;
+use App\Codes\Models\Product;
 use App\Services\ImageInterventionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

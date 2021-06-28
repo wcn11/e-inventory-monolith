@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\StockRequest;
+use App\Codes\Models\StockRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -24,17 +23,22 @@ class DashboardController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 
-    public function index(): \Illuminate\Contracts\Support\Renderable
+    public function index()
     {
-        $role = auth()->user()->hasPermissionTo('admin');
-        if ($role){
-            return view('dashboard');
-        }
 
-        $user = auth()->user()->id;
+        return view('dashboard');
 
-        $stocks = StockRequest::select('total_stock')->where("user_id", $user)->sum('total_stock');
-        return view('pages.stok.index', compact('stocks'));
+//        $role = auth()->user();
+//
+//        if ($role){
+//            return view('dashboard');
+//        }
+//
+//        $user = auth()->user()->id;
+//
+//        $stocks = StockRequest::select('total_stock')->where("user_id", $user)->sum('total_stock');
+//
+//        return view('pages.stok.index', compact('stocks'));
     }
 
     public function stock(Request $request){

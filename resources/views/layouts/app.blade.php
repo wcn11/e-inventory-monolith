@@ -73,7 +73,7 @@
                 <div class="info">
                     <a href="#" class="d-block">{{ auth()->user()->name }}</a>
                     <span class="text-center text-white">
-                        {{ auth()->user()->roles[0]->name }}
+                        {{ auth()->user()->getRoleNames()[0]}}
                     </span>
                 </div>
             </div>
@@ -114,6 +114,12 @@
                                 <a href="{{ route('stok') }}" class="nav-link link-stock">
                                     <i class="fas fa-pallet nav-icon"></i>
                                     <p>Stock</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('stok.opname') }}" class="nav-link link-stock-trip">
+                                    <i class="fad fa-box-check nav-icon"></i>
+                                    <p>Stock Opname</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -167,8 +173,14 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('pengguna') }}" class="nav-link">
+                                <a href="{{ route('roles') }}" class="nav-link">
                                     <i class="fas fa-user-tag nav-icon"></i>
+                                    <p>Peran</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('user') }}" class="nav-link">
+                                    <i class="fad fa-users-class nav-icon"></i>
                                     <p>Pengguna</p>
                                 </a>
                             </li>
@@ -209,14 +221,14 @@
 
                     @can('admin')
                         <li class="nav-item">
-                            <a href="{{ route('log') }}" class="nav-link">
+                            <a href="{{ route('logout') }}" class="nav-link">
                                 <i class="fas fa-cogs nav-icon"></i>
                                 <p>Pengaturan</p>
                             </a>
                         </li>
                     @endcan
                     <li class="nav-item">
-                        <a href="{{ route('log') }}" class="nav-link">
+                        <a href="{{ route('logout') }}" class="nav-link">
                             <i class="fas fa-sign-out-alt nav-icon"></i>
                             <p>Logout</p>
                         </a>

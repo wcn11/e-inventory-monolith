@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ProductImport;
-use App\Product;
-use App\StockRequest;
-use App\StockRequestItem;
+use App\Codes\Models\Product;
+use App\Codes\Models\StockRequest;
+use App\Codes\Models\StockRequestItem;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-
+use App\Codes\Forms\Stock\Form as Stock;
 
 class StockController extends Controller
 {
@@ -23,11 +22,17 @@ class StockController extends Controller
 
     protected $pdf;
 
-    public function __construct(Request $request, Product $model, PDF $pdf)
+    protected $stock;
+
+    protected $input;
+
+    public function __construct(Request $request, Stock $stock, Product $model, PDF $pdf)
     {
         $this->request = $request;
         $this->model = $model;
         $this->pdf = $pdf;
+        $this->stock = $stock;
+        $this->input = $this->request->all();
     }
 
     public function builder(): \Illuminate\Database\Query\Builder
@@ -41,6 +46,12 @@ class StockController extends Controller
 
         $stocks = StockRequest::select('total_stock')->where("user_id", $user)->sum('total_stock');
         return view('pages.stok.index', compact('stocks'));
+    }
+
+    public function opname(){
+
+        return view('pages.stok.opname.index');
+
     }
 
     public function upload(Request $request){
@@ -291,5 +302,9 @@ class StockController extends Controller
         );
 
         return response()->download($file, 'CONTOH_BERITA_ACARA_STOK_MANUAL.pdf', $headers);
+    }
+
+    public function coba(){
+        return $this->stock->coba($this->input);
     }
 }

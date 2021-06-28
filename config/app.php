@@ -170,6 +170,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
         /*
          * Application Service Providers...
          */

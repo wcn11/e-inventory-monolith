@@ -14,7 +14,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('pengguna') }}">Pengguna</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('user') }}">Pengguna</a></li>
                             <li class="breadcrumb-item active">Update Pengguna</li>
                         </ol>
                     </div><!-- /.col -->
@@ -28,35 +28,33 @@
                                 Update Pengguna Baru
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('pengguna.update', ['id' => $user->id]) }}" method="post">
+                                <form action="{{ route('user.update', ['id' => $user->id]) }}" method="post">
                                     @method('put')
                                     @csrf
                                     <div class="form-row">
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="name">Nama <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" value="{{ $user->name }}" id="name" placeholder="Nama Pengguna" required>
+                                                <input type="text" class="form-control form-control-border" name="name" value="{{ $user->name }}" id="name" placeholder="Nama Pengguna" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="email">Email <span class="text-danger">*</span></label>
                                                 <input type="email" class="form-control form-control-border" value="{{ $user->email }}" name="email" id="email" placeholder="Email Pengguna" required>
                                             </div>
                                             <div class="form-group">
-                                                <label for="password">Password <span class="text-danger">*</span></label>
-                                                <input type="password" name="password" class="form-control form-control-border" id="password" placeholder="Password Pengguna" required>
+                                                <label for="password">Password <span class="text-danger">*kosongkan bila tidak ingin ubah password</span></label>
+                                                <input type="password" name="password" class="form-control form-control-border" id="password" placeholder="Password Pengguna">
                                             </div>
                                             <div class="form-group">
-                                                <label for="password-confirm">Konfirmasi Password <span class="text-danger">*</span></label>
-                                                <input type="password" name="password-confirm" class="form-control form-control-border" id="password-confirm" placeholder="Konfirmasi Password" required>
+                                                <label for="password-confirm">Konfirmasi Password <span class="text-danger">*kosongkan bila tidak ingin ubah password</span></label>
+                                                <input type="password" name="password-confirm" class="form-control form-control-border" id="password-confirm" placeholder="Konfirmasi Password">
                                             </div>
                                             <div class="form-group">
-                                                <label for="posisi">Wewenang / Otoritas <span class="text-danger">*</span></label>
-                                                <select class="custom-select form-control-border" name="position" id="position" required>
-                                                    <option>Administrator</option>
-                                                    <option>Pusat</option>
-                                                    <option>Supplier</option>
-                                                    <option>Mitra Pusat</option>
-                                                    <option>Viewer</option>
+                                                <label for="role">Wewenang / Otoritas <span class="text-danger">*</span></label>
+                                                <select class="custom-select form-control-border" name="role" id="role" required>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{ $role->name }}" {{ $user->getRoleNames()[0] === $role->name ? "selected" : "" }}>{{ $role->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="row">

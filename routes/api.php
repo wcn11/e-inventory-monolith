@@ -23,4 +23,7 @@ Route::group(['middleware' => 'auth:api'], function (){
     Route::post('/stock/upload', 'StockController@storeUpload');
     Route::delete('/category/destroy/{id}', 'CategoryController@destroy');
     Route::get('/stock/chart', 'StockController@getChartData');
+
+    Route::post('/roles/create', 'API\RolesController@create')->name('api.roles.create');
+    Route::put('/roles/{id}/update', 'API\RolesController@update')->name('api.roles.update');
 });

@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Services\ImageInterventionService;
+use App\Codes\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Codes\Repositories\User\Repository as UserRepository;
+use App\Codes\Repositories\Roles\Repository as RoleRepository;
+use App\Codes\Forms\User\Form as Form;
 
 class UserController extends Controller
 {
@@ -20,55 +15,51 @@ class UserController extends Controller
 
     protected $model;
 
-    public function __construct(Request $request, ImageInterventionService $imageInterventionService, User $model)
+    protected $form;
+
+    protected $userRepository;
+
+    protected $roleRepository;
+
+    public function __construct(Request $request, Form $form, RoleRepository $roleRepository, User $model, UserRepository $userRepository)
     {
-        $this->request = $request;
+        $this->request = $request->all();
         $this->model = $model;
+        $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
+        $this->form = $form;
     }
 
     public function index(){
-        $users = User::with('roles')->get();
+
+        $users =  $this->userRepository->getAllWithRoles();
 
         return view('pages.pengguna.index', compact('users'));
     }
+
     public function create(){
-        $roles = Role::all();
+
+        $roles = $this->roleRepository->all();
+
         return view('pages.pengguna.create', compact('roles'));
     }
     public function edit($id){
-        $user = $this->model->find($id);
-        return view('pages.pengguna.update', compact('user'));
+
+        $user = $this->userRepository->findOrFail($id);
+
+        $roles = $this->roleRepository->all();
+
+        return view('pages.pengguna.update', compact('user', 'roles'));
     }
 
-    public function store(){
+    public function store()
+    {
 
-        $validator = Validator::make($this->request->all(), [
-            'name' => 'required',
-            'email' => 'required',
-            'password' => 'confirmed|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator->errors());
-        }
-
-        if (! isset($this->request['is_enable'])){
-            $this->request['is_enable'] = 'off';
-        }
-
-        $user = User::create([
-            'name' => $this->request['name'],
-            'email' => $this->request['email'],
-            'is_enable' => $this->request['is_enable'],
-            'password' => Hash::make($this->request['password']),
-            'api_token' => Str::random(80),
-        ]);
-
-        $user->assignRole($this->request['role']);
-
-        return redirect()->route('pengguna');
+        return $this->form->store($this->request);
     }
-    public function update(){
-        return view('pages.pengguna.update');
+
+    public function update($id){
+
+        return $this->form->update($id, $this->request);
     }
 }

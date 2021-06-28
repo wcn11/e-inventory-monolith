@@ -15,7 +15,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('pengguna') }}">Pengguna</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('user') }}">Pengguna</a></li>
                             <li class="breadcrumb-item active">Buat Pengguna Baru</li>
                         </ol>
                     </div><!-- /.col -->
@@ -29,7 +29,7 @@
                                 Pengguna Baru
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('pengguna.store') }}" method="post">
+                                <form action="{{ route('user.store') }}" method="post">
                                     @csrf
                                     <div class="form-row">
                                         <div class="col-md-12">
