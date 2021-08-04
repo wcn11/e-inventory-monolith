@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Codes\Models\Province;
 use App\Codes\Models\User;
 use Illuminate\Http\Request;
 use App\Codes\Repositories\User\Repository as UserRepository;
@@ -41,7 +42,9 @@ class UserController extends Controller
 
         $roles = $this->roleRepository->all();
 
-        return view('pages.pengguna.create', compact('roles'));
+        $provinces = Province::all();
+
+        return view('pages.pengguna.create', compact('roles', 'provinces'));
     }
     public function edit($id){
 
@@ -49,17 +52,31 @@ class UserController extends Controller
 
         $roles = $this->roleRepository->all();
 
-        return view('pages.pengguna.update', compact('user', 'roles'));
+        $provinces = Province::all();
+
+        $region = $this->userRepository->findOrFail($id)->province;
+
+        $region = $region[0] ?? 0;
+
+        return view('pages.pengguna.update', compact('user', 'roles', 'provinces', 'region'));
+
     }
 
     public function store()
     {
 
         return $this->form->store($this->request);
+
     }
 
     public function update($id){
 
         return $this->form->update($id, $this->request);
+    }
+
+    public function destroy($id){
+
+        return $this->form->destroy($id);
+
     }
 }

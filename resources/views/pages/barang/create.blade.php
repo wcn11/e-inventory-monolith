@@ -32,7 +32,7 @@
                                     <div class="form-row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="sku">Kode SKU <span class="text-danger">* !!! KODE SKU TIDAK BISA DI UPDATE, HARAP MASUKAN HATI-HATI !!!</span></label>
+                                                <label for="sku">Kode SKU <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control form-control-border" name="sku" id="sku" placeholder="Kode SKU" required>
                                             </div>
                                             <div class="form-group">
@@ -70,24 +70,46 @@
 {{--                                            <product-variant-options></product-variant-options>--}}
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group">
-                                                <input type="checkbox" class="form-control form-control-border" id="is_enable" name="is_enable" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="slug">Slug Produk <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" name="slug" id="slug" placeholder="Slug Produk" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="meta-title">Meta Title <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" name="meta_title" id="meta-title" placeholder="Masukan Meta Title" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Meta Description <span class="text-danger">*</span></label>
-                                                <textarea class="form-control form-control-border" name="meta_description" id="meta-description" rows="6" placeholder="Masukan Meta Deskripsi ..." required></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="meta-keywords">Meta Keywords <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" name="meta_keywords" id="meta-keywords" placeholder="Masukan Meta Keywords" required>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" class="form-control form-control-border" id="is_enable" name="is_enable" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="slug">Slug Produk <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control form-control-border" name="slug" id="slug" placeholder="Slug Produk" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-title">Meta Title <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control form-control-border" name="meta_title" id="meta-title" placeholder="Masukan Meta Title" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Meta Description <span class="text-danger">*</span></label>
+                                                        <textarea class="form-control form-control-border" name="meta_description" id="meta-description" rows="6" placeholder="Masukan Meta Deskripsi ..." required></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-keywords">Meta Keywords <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control form-control-border" name="meta_keywords" id="meta-keywords" placeholder="Masukan Meta Keywords" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="sack-container">
+                                                        <div class="wrapper-sack">
+                                                            <div class="form-group">
+                                                                <label for="contents">Jumlah Produk Dalam Karung</label>
+                                                                <input type="text" class="form-control form-control-border" name="contents" id="contents" placeholder="Isi Total Dalam Karung" required onkeydown="return event.keyCode !== 69">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="weight_min">Berat Min. (KG)</label>
+                                                                <input type="text" class="form-control form-control-border" name="weight_min" id="weight_min" placeholder="Berat Minimal Karung (Kilogram). Contoh: 1.5" required onkeydown="return event.keyCode !== 69">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="weight_min">Berat Maks. (KG)</label>
+                                                                <input type="text" class="form-control form-control-border" name="weight_max" id="weight_max" placeholder="Berat Maksimal Karung (Kilogram). Contoh: 1.5" required onkeydown="return event.keyCode !== 69">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -99,7 +121,6 @@
                                                 <div class="w-50">
                                                     <img src="" class="img-thumbnail thumbnail-cover" alt="Cover">
                                                 </div>
-{{--                                                <upload-file></upload-file>--}}
                                             </div>
                                         </div>
                                     </div>
@@ -127,13 +148,44 @@
         textarea{
             resize: none;
         }
+        .sack-container{
+            background-color: #FFB703;
+            border-radius: 5% 10%;
+        }
+
+        .wrapper-sack{
+            padding: 4%;
+        }
     </style>
 @endpush
 
 @push('scripts')
     <!-- Bootstrap Switch -->
     <script src="{{ asset('plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
+
+        let Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        @error('product_store_invalid')
+            Toast.fire({
+                icon: 'error',
+                title: '{{ $message }}'
+            })
+        @enderror
+
+        @error('sack_store_invalid')
+            Toast.fire({
+                icon: 'error',
+                title: '{{ $message }}'
+            })
+        @enderror
 
         function string_to_slug (str) {
             str = str.replace(/^\s+|\s+$/g, ''); // trim
@@ -169,7 +221,6 @@
                 })
             }
         }
-
 
         jQuery(document).ready(function ($) {
 
@@ -221,8 +272,24 @@
             });
             // end filter number
 
+            $("#contents").inputFilter(function(value) {
+                return /^-?\d*$/.test(value);
+            });
+
             // weight converter
             $("#weight").on('keypress', function (){
+                let weight = $(this)
+                let rgx = /^[0-9]*\.?[0-9]*$/;
+                weight.val(weight.val().match(rgx));
+            })
+
+            $("#weight_min").on('keypress', function (){
+                let weight = $(this)
+                let rgx = /^[0-9]*\.?[0-9]*$/;
+                weight.val(weight.val().match(rgx));
+            })
+
+            $("#weight_max").on('keypress', function (){
                 let weight = $(this)
                 let rgx = /^[0-9]*\.?[0-9]*$/;
                 weight.val(weight.val().match(rgx));

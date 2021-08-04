@@ -107,10 +107,17 @@
                 timer: 3000
             });
 
-            @if(Session::has('product_deleted_status'))
+            @error('product_not_found')
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ $message }}'
+                })
+            @enderror
+
+            @if(Session::has('product_deleted_success'))
             Toast.fire({
                 icon: 'success',
-                title: '{{ Session::get('category_deleted_status') }}'
+                title: '{{ Session::get('product_deleted_success') }}'
             })
             @endif
 

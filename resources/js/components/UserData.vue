@@ -7,6 +7,7 @@
             <th>Nama</th>
             <th>Email</th>
             <th>status</th>
+            <th>Region</th>
             <th>Otoritas</th>
             <th>Di Daftarkan</th>
             <th>Aksi</th>
@@ -18,6 +19,7 @@
             <td> {{ i.name }} </td>
             <td> {{ i.email }} </td>
             <td> {{ i.is_enable ? i.is_enable : 'off' }}</td>
+            <td> {{ i.province.length > 0 ? i.province[0].name : "Belum Dipilih" }} </td>
             <td>
                 <span class="badge badge-secondary" v-for="role in i.roles" :key="role.id">
                     {{ role.name }}
@@ -26,7 +28,8 @@
             <td> {{ i.created_at | formatDate }}</td>
             <td>
                 <a :href="`/user/edit/${i.id}`" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Edit Kategori"><i class="fas fa-edit"></i></a>
-                <a href="#" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus Kategori"><i class="fas fa-trash-alt"></i></a>
+                <modal-delete-confirmation :id="`${i.id}`"  :route="`user/delete`"></modal-delete-confirmation>
+<!--                <a href="#" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus Kategori"><i class="fas fa-trash-alt"></i></a>-->
             </td>
         </tr>
         </tbody>
@@ -35,6 +38,8 @@
 
 <script>
 import moment from 'moment'
+import ModalDeleteConfirmation from "./Helper/ModalDeleteConfirmation";
+
 moment.locale('id');
 
 export default {
@@ -43,7 +48,8 @@ export default {
         'data'
     ],
     components: {
-        moment
+        moment,
+        ModalDeleteConfirmation
     },
     filters:{
         formatDate(date){

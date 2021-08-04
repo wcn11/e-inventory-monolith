@@ -1,5 +1,8 @@
 <template>
-    <a href="#" class="btn btn-danger" @click="openModal" data-toggle="tooltip" data-placement="top" title="Hapus Kategori"><i class="fas fa-trash-alt"></i></a>
+    <div>
+        <a href="#" class="btn btn-danger" @click="openModal" data-toggle="tooltip" data-placement="top" title="Hapus"><i class="fas fa-trash-alt"></i></a>
+<!--        <form action="/delete/"></form>-->
+    </div>
 </template>
 
 <script>
@@ -16,10 +19,18 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Hapus!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = this.route
-                    }
+                }).then( async (result) => {
+
+                    const response = await axios.delete(`api/${this.route}/${this.id}`)
+                        .then(result => {
+                                window.location.href = result.data.route
+                        }).
+                            catch(err => console.log(err))
+
+                    console.log(response)
+                    // if (result.isConfirmed) {
+                    //     window.location.href = this.route
+                    // }
                 })
 
                 const element = document.querySelector('.swal2-modal');

@@ -44,6 +44,8 @@ class Form {
             'api_token' => Str::random(80),
         ]);
 
+        $user->province()->attach($request['region']);
+
         $user->assignRole($request['role']);
 
         session()->flash("user_created", "Pengguna <b>" . $request['name']  . "</b> berhasil dibuat!");
@@ -59,19 +61,33 @@ class Form {
 
         $request = array_filter($request);
 
-        if (isset($this->request['is_enable']) !== false){
+        $request['is_enable'] = $request['is_enable'] ?? "off";
 
-            $request['is_enable'] = 'off';
-
-        }
+        $request['password'] = Hash::make($request['password']);
 
         $user = $this->userRepository->findOrFail($id);
 
         $user->update($request);
 
+        $user->province()->detach();
+
+        $user->province()->attach($request['region']);
+
         $user->syncRoles($request['role']);
 
         return  redirect()->route('user')->with("user_updated", "Pengguna <b>" . $request['name']  . "</b> berhasil di update!");
+
+    }
+
+    public function destroy($id){
+
+        $user = $this->userRepository->delete($id);
+
+        return successResponse([
+
+            "route" => route('user')
+
+        ]);
 
     }
 

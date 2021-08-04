@@ -1,8 +1,8 @@
 <template>
-
+<div class="table-responsive">
     <table id="data-barang" class="table table-bordered table-hover">
         <thead>
-        <tr>
+        <tr class="text-center">
             <th>ID</th>
             <th>SKU</th>
             <th>Nama Barang</th>
@@ -11,6 +11,14 @@
             <th>Status</th>
             <th>Harga</th>
             <th>Bobot</th>
+            <th colspan="3">
+                <p>Karung</p>
+                <div class="row">
+                    <div class="col sm-4">Isi Karung</div>
+                    <div class="col sm-4">Berat Min.</div>
+                    <div class="col sm-4">Berat Maks.</div>
+                </div>
+            </th>
             <th>Deskripsi</th>
             <th>Terakhir Diubah</th>
             <th>Aksi</th>
@@ -26,6 +34,9 @@
             <td> {{ i.is_enable }}</td>
             <td> {{ i.price | formatMoney}}</td>
             <td> {{ i.weight}}</td>
+            <td> {{ i.sack.length > 0 ? i.sack[0].contents : 0}}</td>
+            <td> {{ i.sack.length > 0 ? i.sack[0].weight_min : 0}}</td>
+            <td> {{ i.sack.length > 0 ? i.sack[0].weight_max : 0}}</td>
             <td> {{ i.description }}</td>
             <td> {{ i.updated_at | formatDate }}</td>
             <td>
@@ -62,6 +73,7 @@
         </div>
         <!-- /.modal -->
     </table>
+</div>
 </template>
 
 <script>

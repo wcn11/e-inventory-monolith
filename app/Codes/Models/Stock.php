@@ -9,13 +9,19 @@ class Stock extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'stock_request';
-
-    protected $primaryKey = 'id';
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
+    protected $table = 'stock';
 
     protected $guarded = [];
+
+    public function product(){
+
+        return $this->belongsTo(Product::class);
+
+    }
+
+    public function user(){
+
+        return $this->belongsTo(User::class);
+
+    }
 }

@@ -77,11 +77,3 @@
         <!-- /.content-header -->
     </div>
 @endsection
-
-@push('css')
-    <style>
-    </style>
-@endpush
-
-@push('scripts')
-@endpush

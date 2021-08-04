@@ -26,6 +26,6 @@ class User extends BaseRepository implements Repository
     public function getAllWithRoles()
     {
         // TODO: Implement getAll() method.
-        return $this->with('roles')->get();
+        return $this->with('roles')->with('province')->get();
     }
 }

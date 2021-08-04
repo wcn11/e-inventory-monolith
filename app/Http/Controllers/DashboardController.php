@@ -26,19 +26,16 @@ class DashboardController extends Controller
     public function index()
     {
 
-        return view('dashboard');
+        $user = auth()->user();
 
-//        $role = auth()->user();
-//
-//        if ($role){
-//            return view('dashboard');
-//        }
-//
-//        $user = auth()->user()->id;
-//
-//        $stocks = StockRequest::select('total_stock')->where("user_id", $user)->sum('total_stock');
-//
-//        return view('pages.stok.index', compact('stocks'));
+        if ($user->hasAnyRole('Administrator')){
+
+            return view('dashboard');
+
+        }
+
+        return redirect()->route('stok.opname');
+
     }
 
     public function stock(Request $request){

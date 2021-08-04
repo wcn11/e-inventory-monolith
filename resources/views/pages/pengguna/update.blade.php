@@ -57,6 +57,18 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="region">Wilayah<span class="text-danger">*</span></label>
+                                                <select class="custom-select form-control-border" name="region" id="region" required>
+                                                    @foreach($provinces as $province)
+                                                        @if(empty($region))
+                                                            <option value="{{ $province->id }}">{{ $province->name }}</option>
+                                                        @else
+                                                            <option value="{{ $province->id }}" {{ $province->id === $region->id ? "selected" : "" }}>{{ $province->name }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-6">
 

@@ -20,10 +20,44 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'auth:api'], function (){
 
     Route::get('/user', 'StockController@coba');
-    Route::post('/stock/upload', 'StockController@storeUpload');
-    Route::delete('/category/destroy/{id}', 'CategoryController@destroy');
-    Route::get('/stock/chart', 'StockController@getChartData');
+    Route::delete('/user/delete/{id}', 'API\UserController@destroy')->name('api.user.delete');
 
-    Route::post('/roles/create', 'API\RolesController@create')->name('api.roles.create');
-    Route::put('/roles/{id}/update', 'API\RolesController@update')->name('api.roles.update');
+
+    Route::delete('/category/destroy/{id}', 'CategoryController@destroy');
+
+
+    Route::group(['prefix' => '/limit'], function () {
+
+        Route::get('/', 'API\LimitController@index');
+        Route::delete('/{id}', 'API\LimitController@delete');
+        Route::get('/search', 'API\LimitController@search');
+        Route::put('/product', 'API\LimitController@setLimit');
+
+    });
+
+    Route::group(['prefix' => '/stock'], function () {
+
+        Route::post('/upload', 'StockController@storeUpload');
+        Route::get('/chart', 'StockController@getChartData');
+
+        Route::group(['prefix' => '/opname'], function () {
+            Route::get('/', 'API\StockController@getProducts')->name('stok.opname.products');
+            Route::post('/store', 'API\StockController@opnameStore')->name('stok.opname.store');
+            Route::post('/store/confirm', 'API\StockController@storeConfirmed')->name('stok.opname.confirm');
+        });
+
+        Route::group(['prefix' => '/request'], function () {
+            Route::post('/store/{sjId}', 'API\StockController@requestStore')->name('api.stok.request.store');
+            Route::post('/process/{sjId}', 'API\StockController@process')->name('api.stok.request.process');
+            Route::put('/confirm/{orderId}', 'API\StockController@requestConfirmed')->name('api.stok.request.confirm');
+        });
+
+    });
+
+    Route::group(['prefix' => '/roles'], function () {
+
+        Route::post('/create', 'API\RolesController@create')->name('api.roles.create');
+        Route::put('/{id}/update', 'API\RolesController@update')->name('api.roles.update');
+
+    });
 });

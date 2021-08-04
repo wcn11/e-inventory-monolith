@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Codes\Models\StockRequestProcess;
 use App\Imports\ProductImport;
 use App\Codes\Models\Product;
 use App\Codes\Models\StockRequest;
@@ -11,7 +12,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Codes\Forms\Stock\Form as Stock;
+use App\Codes\Forms\StockOpname\Form;
+use App\Codes\Repositories\Product\Repository as ProductRepository;
+use App\Codes\Repositories\StockOpname\Repository as StockOpnameRepository;
+use App\Codes\Repositories\Stock\Repository as StockRepository;
+use App\Codes\Repositories\Limit\Repository as LimitRepository;
+use App\Codes\Repositories\StockRequest\Repository as StockRequestRepository;
 
 class StockController extends Controller
 {
@@ -22,45 +28,127 @@ class StockController extends Controller
 
     protected $pdf;
 
-    protected $stock;
+    protected $form;
 
     protected $input;
 
-    public function __construct(Request $request, Stock $stock, Product $model, PDF $pdf)
+    protected $productRepository;
+
+    protected $stockOpnameRepository;
+
+    protected $stockRepository;
+
+    protected $limitRepository;
+
+    protected $stockRequestRepository;
+    public function __construct(Request $request, Form $form, Product $model, PDF $pdf, LimitRepository $limitRepository, StockOpnameRepository $stockOpnameRepository, StockRepository $stockRepository, StockRequestRepository $stockRequestRepository, ProductRepository $productRepository)
     {
         $this->request = $request;
         $this->model = $model;
         $this->pdf = $pdf;
-        $this->stock = $stock;
+        $this->form = $form;
         $this->input = $this->request->all();
+        $this->productRepository = $productRepository;
+        $this->stockOpnameRepository = $stockOpnameRepository;
+        $this->stockRepository = $stockRepository;
+        $this->limitRepository = $limitRepository;
+        $this->stockRequestRepository = $stockRequestRepository;
     }
 
     public function builder(): \Illuminate\Database\Query\Builder
     {
         return DB::table('stock_request');
     }
-
     public function index(Request $request){
+
+        $region = $this->getUserRegion();
 
         $user = auth()->user()->id;
 
         $stocks = StockRequest::select('total_stock')->where("user_id", $user)->sum('total_stock');
+
         return view('pages.stok.index', compact('stocks'));
     }
 
     public function opname(){
 
-        return view('pages.stok.opname.index');
+        $recently = $this->stockOpnameRepository->where([
+                "user_id" => auth()->user()->id
+            ])->
+            whereBetween("date", [
+                now()->subDays(7), now()
+            ])->with("stock_opname_items.product")->get();
+
+        $stock = $this->stockRepository->where(["user_id" => auth()->user()->id])->with('product')->get();
+
+        $stock_limit = $this->limitRepository->where(["user_id" => auth()->user()->id])->with('product')->get(); //ambang batas
+
+        $limits = [];
+
+        foreach ($stock_limit as $limit){
+
+            $data  = collect($stock)->where('product_id', $limit['product_id']);
+
+            if ($data->count() > 0){
+
+                $limit['stock'] = $data->first();
+
+            }else{
+
+                $limit['stock'] = [];
+
+            }
+
+            if (!empty($limit['stock']) && $limit['stock']['total'] < $limit['stock_min']){
+
+                $limit['limit_status'] = false;
+
+            } else if (!empty($limit['stock']) && $limit['stock']['total'] > $limit['stock_min']) {
+
+                $limit['limit_status'] = true;
+
+            }else{
+
+                $limit['limit_status'] = false;
+
+            }
+
+            $limits[] = $limit;
+
+        }
+
+        $stocks['stock'] = $stock;
+
+        $stocks['limits'] = $limits;
+
+        return view('pages.stok.opname.index', ['recently' => $recently, 'stocks' => $stocks]);
 
     }
 
     public function upload(Request $request){
+
         return view('pages.stok.upload-stock');
+
     }
 
-    public function trip(Request $request)
+    public function requestStock(Request $request)
     {
-        return view('pages.stok.trip');
+
+        $stocks = $this->stockRequestRepository->where(["user_id" => auth()->user()->id])->with('stock_request_items')->where(["is_confirmed" => 0])->get();
+
+        $request = StockRequestProcess::where(["user_id" => auth()->user()->id])->with('stock_request_process_items')->get();
+
+        return view('pages.stok.request-stock', compact('stocks', 'request'));
+
+    }
+
+    public function historyRequestStock(Request $request)
+    {
+
+        $stocks = $this->stockRequestRepository->where(["user_id" => auth()->user()->id])->with('stock_request_items')->where(["is_confirmed" => 1])->get();
+
+        return view('pages.stok.history-request-stock', compact('stocks'));
+
     }
 
     public function storeUpload(Request $request)
@@ -227,6 +315,7 @@ class StockController extends Controller
         $this->pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
 
         $pdf = $this->pdf->loadView('pages.stok.download', array('history' =>$history));
+
         return $pdf->download('invoice ' . $id . '.pdf');
     }
 
@@ -240,7 +329,9 @@ class StockController extends Controller
     }
 
     public function checkStockTripById($id){
+
         return StockRequest::findOrFail($id);
+
     }
 
     public function checkTrip(Request $request)
@@ -249,6 +340,7 @@ class StockController extends Controller
         $user = auth()->user()->id;
 
         $data = StockRequest::where("user_id", $user)->orderBy('created_at', 'DESC')->with('stock_request_item')->get();
+
         return view('pages.stok.check', compact('data'));
     }
 
@@ -304,7 +396,17 @@ class StockController extends Controller
         return response()->download($file, 'CONTOH_BERITA_ACARA_STOK_MANUAL.pdf', $headers);
     }
 
-    public function coba(){
-        return $this->stock->coba($this->input);
+    public function getUserRegion(){
+
+        $user = auth()->user();
+
+        if (isset($user->province[0])){
+
+            return $user->province[0]->name;
+
+        }
+
+        return 0;
+
     }
 }

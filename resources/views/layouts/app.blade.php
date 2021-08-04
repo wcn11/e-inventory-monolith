@@ -6,12 +6,17 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="user-id" content="{{ auth()->user()->id }}">
 
     <title>Sistem Elektronik Stock Beliayam.com</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="shortcut icon" href="{{ asset('images/icon-bac.png') }}" type="image/x-icon">
+        <link
+            rel="stylesheet"
+            href="{{ asset('css/animate.min.css') }}"
+        />
 
     <!-- Styles -->
 {{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
@@ -29,6 +34,16 @@
     <!-- Scripts VueJS -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
+<style>
+    .accurate-reconnect{
+        position: fixed;
+        top: 0;
+        z-index: 10000;
+        width: 100%;
+        height: 10%;
+        text-align: center;
+    }
+</style>
 @stack('css')
 <body class="hold-transition sidebar-mini">
 
@@ -82,7 +97,7 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                    @can('admin')
+                    @can('Dashboard')
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-fastest"></i>
@@ -99,8 +114,54 @@
                                     </a>
                                 </li>
                             </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('accurate.connect') }}" class="nav-link">
+                                        <i class="fas fa-tachometer-alt-fastest nav-icon"></i>
+                                        <p>Hubungkan Accurate</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endcan
+
+                    @hasanyrole('Administrator')
+                    <li class="nav-item menu-open">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-inventory"></i>
+                            <p>
+                                Stock RPA
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('stock.control') }}" class="nav-link link-stock">
+                                    <i class="fas fa-pallet nav-icon"></i>
+                                    <p>Stock</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('stock.request') }}" class="nav-link link-stock">
+                                    <i class="fad fa-people-carry nav-icon"></i>
+                                    <p>Request Stock</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('stock.request.history') }}" class="nav-link link-stock">
+                                    <i class="fad fa-clipboard-list-check nav-icon"></i>
+                                    <p>Riwayat Request Stock</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                        @endhasanyrole
+
+                    @hasanyrole('RPA')
                     <li class="nav-item menu-open">
                         <a href="#" class="nav-link active">
                             <i class="nav-icon fas fa-inventory"></i>
@@ -110,33 +171,36 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('stok') }}" class="nav-link link-stock">
-                                    <i class="fas fa-pallet nav-icon"></i>
-                                    <p>Stock</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('stok.opname') }}" class="nav-link link-stock-trip">
-                                    <i class="fad fa-box-check nav-icon"></i>
-                                    <p>Stock Opname</p>
-                                </a>
-                            </li>
+{{--                            <li class="nav-item">--}}
+{{--                                <a href="{{ route('stok') }}" class="nav-link link-stock">--}}
+{{--                                    <i class="fas fa-pallet nav-icon"></i>--}}
+{{--                                    <p>Stock</p>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
+{{--                            <li class="nav-item">--}}
+{{--                                <a href="{{ route('stok.opname') }}" class="nav-link link-stock-trip">--}}
+{{--                                    <i class="fad fa-box-check nav-icon"></i>--}}
+{{--                                    <p>Stock Opname</p>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
                             <li class="nav-item">
                                 <a href="{{ route('stok.trip') }}" class="nav-link link-stock-trip">
-                                    <i class="fas fa-truck-moving nav-icon"></i>
-                                    <p>Buat Perjalanan Stock</p>
+                                    <i class="fad fa-hand-holding-box nav-icon"></i>
+                                    <p>Permintaan Stock</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('stok.trip.cek') }}" class="nav-link link-stock-history">
+                                <a href="{{ route('stok.request.history') }}" class="nav-link link-stock-history">
                                     <i class="fas fa-clipboard-list-check nav-icon"></i>
-                                    <p>Riwayat Stock</p>
+                                    <p>Riwayat Permintaan</p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    @can('admin')
+                        @endhasanyrole
+
+                        @hasanyrole('Administrator')
+                    @can('Kategori Barang')
                         <li class="nav-item menu-open">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-boxes"></i>
@@ -158,11 +222,19 @@
                                     <p>Barang</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('limit') }}" class="nav-link">
+                                    <i class="fad fa-abacus nav-icon"></i>
+                                    <p>Ambang Batas</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @endcan
+                        @endhasanyrole
 
-                    @can('admin')
+
+                        @hasanyrole('Administrator')
                         <li class="nav-item menu-open">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-user"></i>
@@ -186,7 +258,7 @@
                             </li>
                         </ul>
                     </li>
-                    @endcan
+                        @endhasanyrole
 
                     @can('admin')
                         <li class="nav-item menu-open">
@@ -215,9 +287,7 @@
                     </li>
                     @endcan
 
-                    @can('admin')
-                        <li class="nav-header">User Settings</li>
-                    @endcan
+                        <li class="nav-header">Pengaturan</li>
 
                     @can('admin')
                         <li class="nav-item">
@@ -256,6 +326,16 @@
             <b>Version</b> 1.0.0-BETA-VERSION
         </div>
     </footer>
+
+        <div class="alert alert-danger accurate-reconnect" role="alert">
+            <form action="{{ env("ACCURATE_HOST") }}" method="post">
+            Accurate Tidak Terhubung! Data Persediaan Tidak Akan Di Update.  <button type="submit" class="btn btn-outline-secondary alert-link">HUBUNGKAN SEKARANG</button>.
+                <input type="hidden" name="client_id" value="{{ env('ACCURATE_CLIENT_ID') }}" />
+                <input type="hidden" name="response_type" value="{{ env('ACCURATE_RESPONSE_TYPE') }}" />
+                <input type="hidden" name="redirect_uri" value="{{ env('ACCURATE_URL_CALLBACK') }}" />
+                <input type="hidden" name="scope" value="receive_item_save receive_item_delete receive_item_view " />
+            </form>
+        </div>
 </div>
 
     <!-- REQUIRED SCRIPTS -->

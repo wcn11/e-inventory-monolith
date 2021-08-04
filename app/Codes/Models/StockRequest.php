@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StockRequest extends Model
 {
     use SoftDeletes;
+
     protected $table = 'stock_request';
 
     protected $primaryKey = 'id';
@@ -18,8 +19,10 @@ class StockRequest extends Model
 
     protected $guarded = [];
 
-    public function stock_request_item(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function stock_request_items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
+
         return $this->hasMany(StockRequestItem::class);
+
     }
 }

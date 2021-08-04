@@ -42,4 +42,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Roles::class);
     }
+
+    public function province(){
+
+        return $this->belongsToMany(Province::class, 'user_region');
+
+    }
+
+    public function stock(){
+
+        return $this->hasMany(Stock::class);
+
+    }
 }

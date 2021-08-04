@@ -2,8 +2,8 @@
 
 namespace App\Codes\Providers\Stock;
 
-use App\Codes\Repositories\Stock\Stock;
 use Illuminate\Support\ServiceProvider;
+use App\Codes\Repositories\Stock\Stock;
 use App\Codes\Repositories\Stock\Repository;
 
 class Provider extends ServiceProvider {

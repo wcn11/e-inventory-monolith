@@ -33,9 +33,8 @@
                                     <div class="form-row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                {{ $errors }}
                                                 <label for="name">Kode SKU</label>
-                                                <input type="text" class="form-control form-control-border" value="{{ $product->sku }}" disabled>
+                                                <input type="text" name="sku" class="form-control form-control-border" value="{{ $product->sku }}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="name">Nama Produk <span class="text-danger">*</span></label>
@@ -72,24 +71,46 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group">
-                                                <input type="checkbox" class="form-control form-control-border" id="is_enable" name="is_enable" @if($product->is_enable === 'on') checked @endif data-bootstrap-switch data-off-color="danger" data-on-color="success">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="slug">Slug Produk <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" name="slug" value="{{ $product->slug }}" id="slug" placeholder="Slug Produk" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="meta_title">Meta Title <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" name="meta_title" value="{{ $product->meta_title }}" id="meta_title" placeholder="Masukan Meta Title" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="meta_description">Meta Description <span class="text-danger">*</span></label>
-                                                <textarea class="form-control form-control-border" id="meta_description" name="meta_description"  rows="6" placeholder="Masukan Meta Deskripsi ..." required>{{ $product->meta_description }}</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="meta-keywords">Meta Keywords <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-border" name="meta_keywords" id="meta_keywords" placeholder="Masukan Meta Keywords"  value="{{ $product->meta_keywords }}" required>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input type="checkbox" class="form-control form-control-border" id="is_enable" name="is_enable" @if($product->is_enable === 'on') checked @endif data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="slug">Slug Produk <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control form-control-border" name="slug" value="{{ $product->slug }}" id="slug" placeholder="Slug Produk" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta_title">Meta Title <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control form-control-border" name="meta_title" value="{{ $product->meta_title }}" id="meta_title" placeholder="Masukan Meta Title" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta_description">Meta Description <span class="text-danger">*</span></label>
+                                                        <textarea class="form-control form-control-border" id="meta_description" name="meta_description"  rows="6" placeholder="Masukan Meta Deskripsi ..." required>{{ $product->meta_description }}</textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="meta-keywords">Meta Keywords <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control form-control-border" name="meta_keywords" id="meta_keywords" placeholder="Masukan Meta Keywords"  value="{{ $product->meta_keywords }}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="sack-container">
+                                                        <div class="wrapper-sack">
+                                                            <div class="form-group">
+                                                                <label for="contents">Jumlah Produk Dalam Karung</label>
+                                                                <input type="text" class="form-control form-control-border" name="contents" id="contents" placeholder="Isi Total Dalam Karung" value="{{ $sack->contents ?? 0 }}" required onkeydown="return event.keyCode !== 69">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="weight_min">Berat Min. (KG)</label>
+                                                                <input type="text" class="form-control form-control-border" name="weight_min" id="weight_min" placeholder="Berat Minimal Karung (Kilogram). Contoh: 1.5" value="{{ $sack->weight_min ?? 0.0 }}" required onkeydown="return event.keyCode !== 69">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="weight_min">Berat Maks. (KG)</label>
+                                                                <input type="text" class="form-control form-control-border" name="weight_max" id="weight_max" placeholder="Berat Maksimal Karung (Kilogram). Contoh: 1.5" value="{{ $sack->weight_max ?? 0.0 }}" required onkeydown="return event.keyCode !== 69">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -98,9 +119,12 @@
                                             <div class="form-group">
                                                 <label for="exampleInputBorder">Foto Produk <span class="text-danger">*</span></label>
                                                 <input type="file" id="image" name="image" class="form-control form-control-border" accept="image/*"/>
-                                                <div class="w-50">
-                                                    <img src="" class="img-thumbnail thumbnail-cover" alt="Cover">
-                                                </div>
+
+                                                @if($imageURL)
+                                                    <div class="w-50">
+                                                        <img src="{{ $imageURL }}" class="img-thumbnail thumbnail-cover" alt="Cover">
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -129,6 +153,15 @@
         textarea{
             resize: none;
         }
+
+        .sack-container{
+            background-color: #FFB703;
+            border-radius: 5% 10%;
+        }
+
+        .wrapper-sack{
+            padding: 4%;
+        }
     </style>
 @endpush
 
@@ -136,7 +169,30 @@
 
     <!-- Bootstrap Switch -->
     <script src="{{ asset('plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
+
+        let Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        @error('product_update_invalid')
+        Toast.fire({
+            icon: 'error',
+            title: '{{ $message }}'
+        })
+        @enderror
+
+        @error('sack_update_invalid')
+        Toast.fire({
+            icon: 'error',
+            title: '{{ $message }}'
+        })
+        @enderror
+
         function string_to_slug (str) {
             str = str.replace(/^\s+|\s+$/g, ''); // trim
             str = str.toLowerCase();
@@ -158,12 +214,6 @@
         // cek jika cover null atau tidak
         checkImage()
         function checkImage(status = false){
-            let element = document.querySelector('.thumbnail-cover')
-            if (element.value === undefined){
-                jQuery(".thumbnail-cover").css({
-                    "display": 'none'
-                })
-            }
 
             if (status){
                 jQuery(".thumbnail-cover").css({
@@ -224,6 +274,22 @@
             $("#price").inputFilter(function(value) {
                 return /^-?\d*$/.test(value); });
             // end filter number
+
+            $("#contents").inputFilter(function(value) {
+                return /^-?\d*$/.test(value);
+            });
+
+            $("#weight_min").on('keypress', function (){
+                let weight = $(this)
+                let rgx = /^[0-9]*\.?[0-9]*$/;
+                weight.val(weight.val().match(rgx));
+            })
+
+            $("#weight_max").on('keypress', function (){
+                let weight = $(this)
+                let rgx = /^[0-9]*\.?[0-9]*$/;
+                weight.val(weight.val().match(rgx));
+            })
         })
 
 
