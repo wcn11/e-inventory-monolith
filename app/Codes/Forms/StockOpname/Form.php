@@ -499,4 +499,12 @@ class Form {
 
     }
 
+    public function requestDelete($id){
+
+        $stock = $this->stockRequestRepository->findOrFail($id);
+
+        return successResponse($stock->delete());
+
+    }
+
 }

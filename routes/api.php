@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:api'], function (){
         });
 
         Route::group(['prefix' => '/request'], function () {
+            Route::delete('/{sjId}', 'API\StockController@requestDelete')->name('api.stok.request.delete');
             Route::post('/store/{sjId}', 'API\StockController@requestStore')->name('api.stok.request.store');
             Route::post('/process/{sjId}', 'API\StockController@process')->name('api.stok.request.process');
             Route::put('/confirm/{orderId}', 'API\StockController@requestConfirmed')->name('api.stok.request.confirm');

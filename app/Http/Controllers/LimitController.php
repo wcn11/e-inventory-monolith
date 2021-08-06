@@ -21,9 +21,7 @@ class LimitController extends Controller
     public function index()
     {
 
-        $users = $this->userRepository->getAllWithRoles();
-
-//        event(new LimitChangeEvent("Berhasil Yeay"));
+        $users = $this->userRepository->with('roles')->getAllWithRoles();
 
         return view('pages.limit.index', compact('users'));
 

@@ -153,4 +153,32 @@ class StockControlController extends Controller
 
     }
 
+    public function downloadHistoryRequest($userId, $orderId){
+
+        $user = $this->userRepository->find($userId);
+
+        $origin = $user->province->first();
+
+        $destination = auth()->user()->province->first();
+
+        $stockRequest = StockRequestConfirmation::findOrFail($orderId);
+
+
+        $stockRequestItems = $stockRequest->stock_request_confirmation_items;
+
+        $this->pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true]);
+
+        $pdf = $this->pdf->loadView('pages.stok.control.download_stock_request', array(
+
+            'stockRequest' => $stockRequest,
+            'origin' => $origin['name'],
+            'destination' => $destination['name'],
+            'stockRequestItems' => $stockRequestItems
+
+        ));
+
+        return $pdf->download('invoice ' . $stockRequest['id'] . '.pdf');
+
+    }
+
 }

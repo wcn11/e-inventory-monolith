@@ -23,7 +23,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="(user, index) in users" :key="index">
+                            <tr v-for="(user, index) in users" :key="index" v-if="user['roles'][0]['name'] === 'RPA'">
                                 <td> {{ user.id }}</td>
                                 <td> {{ user.name }} </td>
                                 <td> {{ user.email }} </td>

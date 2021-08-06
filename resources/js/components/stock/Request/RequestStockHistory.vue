@@ -5,7 +5,7 @@
             <div class="card card-default">
                 <div class="card-header">
                     <div class="row">
-                        <h1 class="m-0 p-4"><i class="fad fa-hand-holding-box"></i> Riwayat Surat Jalan</h1>
+                        <h1 class="m-0 p-4"><i class="fad fa-hand-holding-box"></i> Riwayat Permintaan Persediaan</h1>
                     </div>
                 </div>
                 <div class="card-body">
@@ -37,7 +37,7 @@
                                 <td> <span class="badge badge-success"> Selesai </span></td>
                                 <td> {{ request['date'] }}</td>
                                 <td>
-                                    <a :href="`/stock/a/request/${request['user_id']}/order/${request['id']}/download`" target="_blank" type="button" class="btn btn-default rounded-circle"><i class="fad fa-file-download"></i></a>
+                                    <a :href="`/stock/a/request/history/${request['user_id']}/${request['id']}/download`" target="_blank" type="button" class="btn btn-default rounded-circle"><i class="fad fa-file-download"></i></a>
                                     <button class="btn btn-info rounded-circle" @click="openModalDetails(request['id'])"><i class="fad fa-info"></i></button>
                                 </td>
                             </tr>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fad fa-times-circle"></i> Close</button>
-                        <a :href="`/stock/a/request/${stockSelected[0]['user_id']}/order/${stockSelected[0]['id']}/download`" target="_blank" type="button" class="btn btn-primary"><i class="fad fa-file-download"></i> Download</a>
+<!--                        <a :href="`/stock/a/request/${stockSelected[0]['user_id']}/order/${stockSelected[0]['id']}/download?type=history`" target="_blank" type="button" class="btn btn-primary"><i class="fad fa-file-download"></i> Download</a>-->
                     </div>
                 </div>
             </div>

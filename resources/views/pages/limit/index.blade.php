@@ -16,7 +16,7 @@
                     </div><!-- /.col -->
                 </div><!-- /.row -->
 
-                <limit-stock :users="{{ $users }}" ></limit-stock>
+                <limit-stock :users="{{ json_encode($users) }}" ></limit-stock>
 
             </div><!-- /.container-fluid -->
         </div>

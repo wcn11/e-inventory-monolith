@@ -5,7 +5,7 @@
             <div class="card card-default">
                 <div class="card-header">
                     <div class="row">
-                        <h1 class="m-0 p-4"><i class="fad fa-hand-holding-box"></i>Surat Jalan</h1>
+                        <h1 class="m-0 p-4"><i class="fad fa-hand-holding-box"></i> Daftar Pesanan Persediaan Yang Harus Di Proses</h1>
                     </div>
                 </div>
                 <div class="card-body">
@@ -37,6 +37,7 @@
                                 <td> <span class="badge badge-warning"> Belum </span></td>
                                 <td> {{ request['date'] }}</td>
                                 <td>
+                                    <button class="btn btn-danger rounded-circle" @click="openModalDelete(request['id'])"><i class="fad fa-ban"></i></button>
                                     <a :href="`/stock/a/request/${request['user_id']}/order/${request['id']}/download`" target="_blank" type="button" class="btn btn-default rounded-circle"><i class="fad fa-file-download"></i></a>
                                     <button class="btn btn-info rounded-circle" @click="openModalDetails(request['id'])"><i class="fad fa-info"></i></button>
                                 </td>
@@ -207,6 +208,28 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" id="modal-delete" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger">
+                        <h5 class="modal-title">Hapus Permintaan Persediaan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah Anda Yakin Ingin Menghapus Pesanan Ini ? </p>
+                        <small><i class="fad fa-info-circle"></i> Harap Perhatikan Bahwa Kemungkinan RPA Sedang Memproses Pesanan !</small> <br/>
+                        <small><i class="fad fa-info-circle"></i> Pesanan Yang Dibatalkan, Tidak Bisa Dikembalikan !</small> <br />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">batal</button>
+                        <button type="button" class="btn btn-danger" @click="deleteStock">Tetap Hapus</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -217,19 +240,44 @@ import pagination from 'laravel-vue-pagination'
 
 export default {
     name: "StockRequest",
-    props: ['stocks', 'request'],
+    props: ['stock', 'request'],
     components: {
         Swal,
         pagination
     },
     data(){
         return {
+            stocks: this.stock,
             sj: "",
             stockSelected: {},
-            stockProcessSelected: {}
+            stockProcessSelected: {},
+            stockDelete: 0
         }
     },
     methods:{
+        deleteStock(){
+
+            axios.delete(`/api/stock/request/${this.stockDelete}`)
+                .then(results => {
+                    if (results.data.success){
+
+                        this.setToastr("success", "Berhasil Membatalkan Permintaan Stok")
+
+                        $("#modal-delete").modal('hide')
+
+                        window.location.reload()
+
+                    }
+                }).catch(err => {
+                    this.setToastr()
+            })
+
+        },
+        openModalDelete(id){
+            $("#modal-delete").modal('show')
+
+            this.stockDelete = id
+        },
         openModalProcessDetails(id){
 
             this.stockProcessSelected = this.request.filter(value => {
@@ -246,7 +294,21 @@ export default {
 
             $("#modal-details").modal('show')
 
-        }
+        },
+        setToastr(type = "error", message = "Terjadi Kesalahan, Mohon Muat Ulang!"){
+
+            let Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+
+            Toast.fire({
+                icon: type,
+                title: message
+            })
+        },
     },
     filters: {
         isConfirmed(status){

@@ -98,7 +98,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content" v-if="stockSelected.length > 0">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropDetails">Data Permintaan Persediaan SJ: <b>{{ stockSelected[0]['id'] }}</b> </h5>
+                        <h5 class="modal-title" id="staticBackdropDetails">Data Permintaan Persediaan: <b>{{ stockSelected[0]['id'] }}</b> </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -110,7 +110,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>SKU</th>
-                                    <th>Nama</th>
+                                    <th>Produk</th>
                                     <th>Berat Satuan/KG</th>
                                     <th>Total</th>
                                     <th>Total Berat/KG</th>
@@ -152,7 +152,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content" v-if="stockProcessSelected.length > 0">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropProcess">Data Permintaan Persediaan SJ: <b>{{ stockProcessSelected[0]['id'] }}</b> </h5>
+                        <h5 class="modal-title" id="staticBackdropProcess">Data Permintaan Persediaan: <b>{{ stockProcessSelected[0]['id'] }}</b> </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

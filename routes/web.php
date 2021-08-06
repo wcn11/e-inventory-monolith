@@ -45,6 +45,8 @@ Route::group(['middleware' => ['auth']], function (){
 
                 Route::get('/history', 'StockControlController@history')->name('stock.request.history');
 
+                Route::get('/history/{userId}/{orderId}/download', 'StockControlController@downloadHistoryRequest')->name('stock.request.history.download');
+
             });
 
         });
@@ -95,16 +97,6 @@ Route::group(['middleware' => ['auth']], function (){
 
     });
 
-    Route::group(['prefix' => '/accurate'], function (){
-
-        Route::get('/connect', 'AccurateController@connect')->name('accurate.connect');
-
-        Route::get('/callback', 'AccurateController@callback')->name('accurate.callback');
-
-        Route::get('/aol-oauth-callback', 'AccurateController@oauthCallback')->name('accurate.oauth.callback');
-
-    });
-
     Route::group(['prefix' => '/roles'], function (){
 
         Route::get('/', 'RolesController@index')->name('roles');
@@ -141,6 +133,13 @@ Route::group(['middleware' => ['auth']], function (){
 
     });
 });
+
+Route::group(['prefix' => '/accurate'], function (){
+
+    Route::get('/callback', 'AccurateController@callback')->name('accurate.callback');
+
+});
+
 
 
 Route::get('/logout', function (){

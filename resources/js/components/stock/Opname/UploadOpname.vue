@@ -5,7 +5,7 @@
             <div class="card card-default">
                 <div class="card-header">
                     <div class="row">
-                        <h1 class="m-0 p-4"><i class="fad fa-hand-holding-box"></i>Surat Jalan <b>{{ request['id'] }}</b></h1>
+                        <h1 class="m-0 p-4"><i class="fad fa-hand-holding-box"></i>No. Pesanan: <b>{{ request['id'] }}</b></h1>
                     </div>
                     <div class="row">
                         <div class="col-md-10">

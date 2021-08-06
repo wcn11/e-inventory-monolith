@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Codes\Models\Accurate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 class AccurateController extends Controller
 {
@@ -11,42 +13,48 @@ class AccurateController extends Controller
 
     protected $input;
 
-    public function __construct(Request $request)
+    protected $http;
+
+    public function __construct(Request $request, Client $client)
     {
         $this->request = $request;
         $this->input = $request->all();
+        $this->http = $client;
     }
 
-    public function connect(){
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function callback()
+    {
 
-        return $response = Http::get(env("ACCURATE_HOST", "https://accurate.id/oauth/authorize"), [
-            'client_id' => env('accurate_client_id'),
-            'response_type' => env('accurate_response_type'),
-            'redirect_uri' => env('accurate_url_callback'),
-            'scope' => "item_view item_save sales_invoice_view"
+        $response = Http::withHeaders([
+                'Authorization' => "Basic " . base64_encode(env("ACCURATE_CLIENT_ID") . ":" . env("ACCURATE_CLIENT_SECRET")),
+                ])->asForm()
+                    ->post(env('ACCURATE_URL_OAUTH'), [
+                        'code' => $this->input['code'],
+                        'grant_type' => "authorization_code",
+                        "redirect_uri" => env('ACCURATE_URL_CALLBACK'),
+                    ]);
+
+        if ($response->failed()){
+
+            abort(404);
+
+        }
+
+        $responseBody = $response->json();
+
+        Accurate::create([
+            "access_token" => $responseBody['access_token'],
+            "token_type" => $responseBody['token_type'],
+            "refresh_token" => $responseBody['token_type'],
+            "expires_in" => $responseBody['expires_in'],
+            "scope" => $responseBody['scope'],
+            "name" => $responseBody['user']['name'],
+            "email" => $responseBody['user']['email']
         ]);
 
-    }
-
-    public function callback(){
-//        withBasicAuth(env("ACCURATE_CLIENT_ID"), env("ACCURATE_CLIENT_SECRET"))
-        return Http::contentType("application/x-www-form-urlencoded")
-            ->withToken("YTZmOTVhMjUtOGVjNy00OTVjLTg5YTktZGQ0ZjMyZWFjOTZkOmU4MzJjMzliYjE4YzU4YjVjMmFmYjA1MmQ1MjExZTBj", "Basic")
-//        withHeaders([
-//            "Content-Type" => "application/x-www-form-urlencoded",
-//            "Authorization" => "Basic YTZmOTVhMjUtOGVjNy00OTVjLTg5YTktZGQ0ZjMyZWFjOTZkOmU4MzJjMzliYjE4YzU4YjVjMmFmYjA1MmQ1MjExZTBj"
-//        ])->
-            ->post("https://account.accurate.id/oauth/token", [
-//                "code" => "SZyKcCY5c8sIi8Nbnglh",
-//                "grant_type" => "authorization_code",
-//                "redirect_uri" => "http://stock.beliayam.test/accurate/callback",
-            ]);
-
-        return $response;
-    }
-
-    public function oauthCallback(){
-
-        return "wlkw";
+        return back();
     }
 }

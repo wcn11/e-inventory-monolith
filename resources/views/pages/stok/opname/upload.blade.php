@@ -11,9 +11,8 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('stok') }}">Stok Barang</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('stok.opname') }}">Stok Opname</a></li>
-                            <li class="breadcrumb-item active">Upload Stock Opname</li>
+                            <li class="breadcrumb-item"><a href="{{ route('stok') }}">Permintaan Persidaan</a></li>
+                            <li class="breadcrumb-item active">Proses Permintaan Persediaan</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -22,9 +21,6 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-default">
-                            <div class="card-header">
-                                <h1 class="m-0 p-4"><i class="fas fa-box"></i>Daftar Produk</h1>
-                            </div>
                             <div class="card-body">
                                 <opname-upload :request="{{ json_encode($request) }}"></opname-upload>
                             </div>

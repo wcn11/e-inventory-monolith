@@ -72,56 +72,58 @@ class StockController extends Controller
 
     public function opname(){
 
-        $recently = $this->stockOpnameRepository->where([
-                "user_id" => auth()->user()->id
-            ])->
-            whereBetween("date", [
-                now()->subDays(7), now()
-            ])->with("stock_opname_items.product")->get();
+        return redirect()->route('stok.trip');
 
-        $stock = $this->stockRepository->where(["user_id" => auth()->user()->id])->with('product')->get();
-
-        $stock_limit = $this->limitRepository->where(["user_id" => auth()->user()->id])->with('product')->get(); //ambang batas
-
-        $limits = [];
-
-        foreach ($stock_limit as $limit){
-
-            $data  = collect($stock)->where('product_id', $limit['product_id']);
-
-            if ($data->count() > 0){
-
-                $limit['stock'] = $data->first();
-
-            }else{
-
-                $limit['stock'] = [];
-
-            }
-
-            if (!empty($limit['stock']) && $limit['stock']['total'] < $limit['stock_min']){
-
-                $limit['limit_status'] = false;
-
-            } else if (!empty($limit['stock']) && $limit['stock']['total'] > $limit['stock_min']) {
-
-                $limit['limit_status'] = true;
-
-            }else{
-
-                $limit['limit_status'] = false;
-
-            }
-
-            $limits[] = $limit;
-
-        }
-
-        $stocks['stock'] = $stock;
-
-        $stocks['limits'] = $limits;
-
-        return view('pages.stok.opname.index', ['recently' => $recently, 'stocks' => $stocks]);
+//        $recently = $this->stockOpnameRepository->where([
+//                "user_id" => auth()->user()->id
+//            ])->
+//            whereBetween("date", [
+//                now()->subDays(7), now()
+//            ])->with("stock_opname_items.product")->get();
+//
+//        $stock = $this->stockRepository->where(["user_id" => auth()->user()->id])->with('product')->get();
+//
+//        $stock_limit = $this->limitRepository->where(["user_id" => auth()->user()->id])->with('product')->get(); //ambang batas
+//
+//        $limits = [];
+//
+//        foreach ($stock_limit as $limit){
+//
+//            $data  = collect($stock)->where('product_id', $limit['product_id']);
+//
+//            if ($data->count() > 0){
+//
+//                $limit['stock'] = $data->first();
+//
+//            }else{
+//
+//                $limit['stock'] = [];
+//
+//            }
+//
+//            if (!empty($limit['stock']) && $limit['stock']['total'] < $limit['stock_min']){
+//
+//                $limit['limit_status'] = false;
+//
+//            } else if (!empty($limit['stock']) && $limit['stock']['total'] > $limit['stock_min']) {
+//
+//                $limit['limit_status'] = true;
+//
+//            }else{
+//
+//                $limit['limit_status'] = false;
+//
+//            }
+//
+//            $limits[] = $limit;
+//
+//        }
+//
+//        $stocks['stock'] = $stock;
+//
+//        $stocks['limits'] = $limits;
+//
+//        return view('pages.stok.opname.index', ['recently' => $recently, 'stocks' => $stocks]);
 
     }
 

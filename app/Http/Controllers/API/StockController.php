@@ -64,4 +64,10 @@ class StockController extends Controller
         return $this->form->requestConfirmed($id, $this->input);
 
     }
+
+    public function requestDelete($id){
+
+        return $this->form->requestDelete($id, $this->input);
+
+    }
 }

@@ -20,7 +20,7 @@
                             <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
+                                <th>Produk</th>
                                 <th>Persediaan Yang Diminta (PCS)</th>
                                 <th>Total Berat</th>
                                 <th>Total Karung (Karung)</th>
@@ -77,7 +77,7 @@
                                 <tr class="text-center">
                                     <th>ID</th>
                                     <th>SKU</th>
-                                    <th>Nama Barang</th>
+                                    <th>Produk</th>
                                     <th>Kategori</th>
                                     <th>Harga</th>
                                     <th>Bobot</th>
@@ -135,7 +135,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-inline">
-                            <label for="sj">No. Surat Jalan : </label>
+                            <label for="sj">No. Pemesanan : </label>
                             <input type="text" name="sj" v-model="sj" class="form-control form-control-border form-control-sm ml-2" id="sj" placeholder="Surat Jalan">
 
                             <div class="form-check ml-2 mb-2 mr-sm-2">
@@ -157,7 +157,7 @@
                                 <tr class="align-middle">
                                     <th>No</th>
                                     <th>SKU</th>
-                                    <th>Nama</th>
+                                    <th>Produk</th>
                                     <th class="text-center">Berat Satuan (KG)</th>
                                     <th class="text-center">Total Berat (KG)</th>
                                     <th class="text-center">Total Permintaan (PCS)</th>
@@ -178,7 +178,7 @@
                                 </tr>
                                 </tbody>
                                 <tfoot>
-                                <tr class="tex25t-center" v-if="selectedProduct.length > 0">
+                                <tr class="text-center" v-if="selectedProduct.length > 0">
                                     <td colspan="4"><b>Total</b></td>
                                     <td><b>{{ total_weight }} KG</b></td>
                                     <td><b>{{ total_order }} PCS</b></td>
@@ -238,8 +238,8 @@ export default {
                 if (results.data.success){
 
                     let data = results.data['data']
-                    // window.open(`${data['link']}`,'_blank');
-                    this.setToastr("success", `Permintaan Stok Berhasil Dipesan Kepada ${this.user['name']}`)
+                    window.open(`${data['link']}`,'_blank');
+                    this.setToastr("success", `Permintaan Stok Berhasil Dipesan!`)
 
                     this.selectedProduct = []
                     this.sj = ""
@@ -247,12 +247,14 @@ export default {
 
                     $("#modal-confirmation").modal('hide')
 
-                    // window.location.href = '/stock/a'
+                    window.location.href = '/stock/a'
 
                 }
 
             }).catch(err => {
-                this.setToastr("error", "Terjadi Error! Silahkan Muat Ulang Halaman!")
+                if (err.response.data.status){
+                    this.setToastr("error", "Terjadi Error! Silahkan Muat Ulang Halaman!")
+                }
             })
 
         },

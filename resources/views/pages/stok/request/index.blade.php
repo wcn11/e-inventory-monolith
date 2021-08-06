@@ -16,7 +16,7 @@
                     </div><!-- /.col -->
                 </div><!-- /.row -->
 
-                <request-stock :stocks="{{ json_encode($stock) }}" :request="{{ json_encode($request) }}"></request-stock>
+                <request-stock :stock="{{ json_encode($stock) }}" :request="{{ json_encode($request) }}"></request-stock>
 
             </div><!-- /.container-fluid -->
         </div>

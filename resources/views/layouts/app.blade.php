@@ -97,7 +97,7 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                    @can('Dashboard')
+                    @hasanyrole('Super Admin')
                         <li class="nav-item menu-open">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-fastest"></i>
@@ -123,7 +123,7 @@
                                 </li>
                             </ul>
                         </li>
-                    @endcan
+                    @endhasanyrole
 
                     @hasanyrole('Administrator')
                     <li class="nav-item menu-open">
@@ -171,18 +171,6 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-{{--                            <li class="nav-item">--}}
-{{--                                <a href="{{ route('stok') }}" class="nav-link link-stock">--}}
-{{--                                    <i class="fas fa-pallet nav-icon"></i>--}}
-{{--                                    <p>Stock</p>--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
-{{--                            <li class="nav-item">--}}
-{{--                                <a href="{{ route('stok.opname') }}" class="nav-link link-stock-trip">--}}
-{{--                                    <i class="fad fa-box-check nav-icon"></i>--}}
-{{--                                    <p>Stock Opname</p>--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
                             <li class="nav-item">
                                 <a href="{{ route('stok.trip') }}" class="nav-link link-stock-trip">
                                     <i class="fad fa-hand-holding-box nav-icon"></i>
@@ -326,16 +314,6 @@
             <b>Version</b> 1.0.0-BETA-VERSION
         </div>
     </footer>
-
-        <div class="alert alert-danger accurate-reconnect" role="alert">
-            <form action="{{ env("ACCURATE_HOST") }}" method="post">
-            Accurate Tidak Terhubung! Data Persediaan Tidak Akan Di Update.  <button type="submit" class="btn btn-outline-secondary alert-link">HUBUNGKAN SEKARANG</button>.
-                <input type="hidden" name="client_id" value="{{ env('ACCURATE_CLIENT_ID') }}" />
-                <input type="hidden" name="response_type" value="{{ env('ACCURATE_RESPONSE_TYPE') }}" />
-                <input type="hidden" name="redirect_uri" value="{{ env('ACCURATE_URL_CALLBACK') }}" />
-                <input type="hidden" name="scope" value="receive_item_save receive_item_delete receive_item_view " />
-            </form>
-        </div>
 </div>
 
     <!-- REQUIRED SCRIPTS -->

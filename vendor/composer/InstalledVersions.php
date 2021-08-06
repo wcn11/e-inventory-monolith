@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '524d5880b63e21325e0480d4ac31a46bce72c69f',
+    'reference' => '9a0cf11aabfb2e236293e4105574fe82a6961a0c',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -484,7 +484,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '524d5880b63e21325e0480d4ac31a46bce72c69f',
+      'reference' => '9a0cf11aabfb2e236293e4105574fe82a6961a0c',
     ),
     'laravel/tinker' => 
     array (
@@ -888,6 +888,13 @@ private static $installed = array (
       array (
       ),
       'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
+    ),
+    'psr/http-factory-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0',
+      ),
     ),
     'psr/http-message' => 
     array (
@@ -1377,6 +1384,15 @@ private static $installed = array (
       ),
       'reference' => '98cb8eeb72e55d4196dd1e36f1f16e7b3a9a088e',
     ),
+    'symfony/psr-http-message-bridge' => 
+    array (
+      'pretty_version' => 'v2.1.1',
+      'version' => '2.1.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'c9012994c4b4fb23e7c57dd86b763a417a04feba',
+    ),
     'symfony/routing' => 
     array (
       'pretty_version' => 'v5.2.9',
@@ -1482,6 +1498,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '6964c76c7804814a842473e0c8fd15bab0f18e25',
+    ),
+    'zendframework/zend-diactoros' => 
+    array (
+      'pretty_version' => '2.2.1',
+      'version' => '2.2.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'de5847b068362a88684a55b0dbb40d85986cfa52',
     ),
   ),
 );
