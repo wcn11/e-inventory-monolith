@@ -88,16 +88,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="alert alert-danger accurate-reconnect" role="alert">
-            <form :action="process.env.ACCURATE_HOST" method="post">
-            Accurate Tidak Terhubung! Data Persediaan Tidak Akan Di Update. <button type="submit" class="btn btn-outline-secondary alert-link">HUBUNGKAN SEKARANG</button>.
-            <input type="hidden" name="client_id" :value="process.env.ACCURATE_CLIENT_ID" />
-            <input type="hidden" name="response_type" :value="process.env.ACCURATE_RESPONSE_TYPE" />
-            <input type="hidden" name="redirect_uri" :value="process.env.ACCURATE_URL_CALLBACK"/>
-            <input type="hidden" name="scope" value="purchase_invoice_view purchase_invoice_save" />
-            </form>
-        </div>
     </div>
 </template>
 

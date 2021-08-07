@@ -37,23 +37,25 @@ class AccurateController extends Controller
                         "redirect_uri" => env('ACCURATE_URL_CALLBACK'),
                     ]);
 
-        if ($response->failed()){
+        return $response;
 
-            abort(404);
-
-        }
-
-        $responseBody = $response->json();
-
-        Accurate::create([
-            "access_token" => $responseBody['access_token'],
-            "token_type" => $responseBody['token_type'],
-            "refresh_token" => $responseBody['token_type'],
-            "expires_in" => $responseBody['expires_in'],
-            "scope" => $responseBody['scope'],
-            "name" => $responseBody['user']['name'],
-            "email" => $responseBody['user']['email']
-        ]);
+//        if ($response->failed()){
+//
+//            abort(404);
+//
+//        }
+//
+//        $responseBody = $response->json();
+//
+//        Accurate::create([
+//            "access_token" => $responseBody['access_token'],
+//            "token_type" => $responseBody['token_type'],
+//            "refresh_token" => $responseBody['token_type'],
+//            "expires_in" => $responseBody['expires_in'],
+//            "scope" => $responseBody['scope'],
+//            "name" => $responseBody['user']['name'],
+//            "email" => $responseBody['user']['email']
+//        ]);
 
         return back();
     }
