@@ -314,6 +314,14 @@
             <b>Version</b> 1.0.0-BETA-VERSION
         </div>
     </footer>
+
+        <form action="{{ env('ACCURATE_HOST')  }}" method="post">
+            Accurate Tidak Terhubung! Data Persediaan Tidak Akan Di Update. <button type="submit" class="btn btn-outline-secondary alert-link">HUBUNGKAN SEKARANG</button>.
+            <input type="hidden" name="client_id" value="{{ env('ACCURATE_CLIENT_ID') }}" />
+            <input type="hidden" name="response_type" value="{{ env('ACCURATE_RESPONSE_TYPE') }}" />
+            <input type="hidden" name="redirect_uri" value="{{ env('ACCURATE_URL_CALLBACK') }}"/>
+            <input type="hidden" name="scope" value="purchase_invoice_view purchase_invoice_save branch_view item_view warehouse_view glaccount_view item_adjustment_view item_transfer_view customer_view customer_category_view customer_save sales_invoice_save sales_receipt_save sales_invoice_view" />
+        </form>
 </div>
 
     <!-- REQUIRED SCRIPTS -->

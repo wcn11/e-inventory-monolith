@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 //});
 
 
-Auth::routes(['register' => false]);
+Auth::routes(['register' => true]);
 
 Route::group(['middleware' => ['auth']], function (){
 
